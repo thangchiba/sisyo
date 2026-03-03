@@ -1,0 +1,26 @@
+{
+  "name": "sisyo",
+  "version": "1.1.0",
+  "description": "Smart documentation system for vibe coding with Claude Code. Token-efficient MAP.md routing.",
+  "bin": {
+    "sisyo": "./bin/sisyo.js"
+  },
+  "files": [
+    "bin/",
+    "templates/"
+  ],
+  "keywords": [
+    "claude-code",
+    "vibe-coding",
+    "documentation",
+    "ai-coding",
+    "developer-tools",
+    "sisyo"
+  ],
+  "author": "HoangThang <hoang.jp>",
+  "homepage": "https://hoang.jp",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  }
+}
