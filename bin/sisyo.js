@@ -5,40 +5,63 @@ const path = require("path");
 
 const RESET = "\x1b[0m";
 const GREEN = "\x1b[32m";
+const YELLOW = "\x1b[33m";
 const CYAN = "\x1b[36m";
 const BOLD = "\x1b[1m";
 const DIM = "\x1b[2m";
 
 function log(msg) { console.log(msg); }
 function ok(msg) { log(`${GREEN}+${RESET} ${msg}`); }
+function up(msg) { log(`${YELLOW}~${RESET} ${msg}`); }
 function info(msg) { log(`${DIM}  ${msg}${RESET}`); }
 
-function copyDir(src, dest) {
+// System files that get replaced on --update
+const SYSTEM_FILES = [
+  ".claude/rules/docs.md",
+  ".claude/skills/vibe-docs/SKILL.md",
+];
+
+function isSystemFile(relativePath) {
+  return SYSTEM_FILES.some(f => relativePath === f || relativePath.endsWith(f));
+}
+
+function copyDir(src, dest, { updateMode = false } = {}) {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
-      copyDir(srcPath, destPath);
+      copyDir(srcPath, destPath, { updateMode });
     } else {
-      // Skip if file already exists
+      const rel = path.relative(process.cwd(), destPath);
       if (fs.existsSync(destPath)) {
-        info(`skip ${path.relative(process.cwd(), destPath)} (exists)`);
+        if (updateMode && isSystemFile(rel)) {
+          fs.copyFileSync(srcPath, destPath);
+          up(`${rel} (updated)`);
+        } else {
+          info(`skip ${rel} (exists)`);
+        }
         continue;
       }
       fs.copyFileSync(srcPath, destPath);
-      ok(path.relative(process.cwd(), destPath));
+      ok(rel);
     }
   }
 }
 
 function main() {
-  const targetDir = process.argv[2] || ".";
+  const args = process.argv.slice(2);
+  const updateMode = args.includes("--update");
+  const targetDir = args.find(a => !a.startsWith("-")) || ".";
   const target = path.resolve(targetDir);
   const templatesDir = path.join(__dirname, "..", "templates");
 
   log("");
-  log(`${BOLD}${CYAN}sisyo${RESET} ${DIM}Smart docs for Claude Code${RESET}`);
+  if (updateMode) {
+    log(`${BOLD}${CYAN}sisyo${RESET} ${DIM}Updating system files...${RESET}`);
+  } else {
+    log(`${BOLD}${CYAN}sisyo${RESET} ${DIM}Smart docs for Claude Code${RESET}`);
+  }
   log("");
 
   if (!fs.existsSync(templatesDir)) {
@@ -47,31 +70,39 @@ function main() {
   }
 
   // Copy all templates
-  copyDir(templatesDir, target);
+  copyDir(templatesDir, target, { updateMode });
 
   // Get today's date
   const today = new Date().toISOString().split("T")[0];
 
-  // Update dates in MAP.md and handoff
-  const mapPath = path.join(target, "docs", "MAP.md");
-  if (fs.existsSync(mapPath)) {
-    let mapContent = fs.readFileSync(mapPath, "utf8");
-    mapContent = mapContent.replace(/YYYY-MM-DD/g, today);
-    fs.writeFileSync(mapPath, mapContent);
-  }
+  // Update dates in MAP.md and handoff (only on fresh install, not --update)
+  if (!updateMode) {
+    const mapPath = path.join(target, "docs", "MAP.md");
+    if (fs.existsSync(mapPath)) {
+      let mapContent = fs.readFileSync(mapPath, "utf8");
+      if (mapContent.includes("YYYY-MM-DD")) {
+        mapContent = mapContent.replace(/YYYY-MM-DD/g, today);
+        fs.writeFileSync(mapPath, mapContent);
+      }
+    }
 
-  const handoffPath = path.join(target, "docs", "99_progress", "handoff.md");
-  if (fs.existsSync(handoffPath)) {
-    let content = fs.readFileSync(handoffPath, "utf8");
-    content = content.replace(/YYYY-MM-DD/g, today);
-    fs.writeFileSync(handoffPath, content);
-  }
+    const handoffPath = path.join(target, "docs", "99_progress", "handoff.md");
+    if (fs.existsSync(handoffPath)) {
+      let content = fs.readFileSync(handoffPath, "utf8");
+      if (content.includes("YYYY-MM-DD")) {
+        content = content.replace(/YYYY-MM-DD/g, today);
+        fs.writeFileSync(handoffPath, content);
+      }
+    }
 
-  const todoPath = path.join(target, "docs", "99_progress", "todo.md");
-  if (fs.existsSync(todoPath)) {
-    let content = fs.readFileSync(todoPath, "utf8");
-    content = content.replace(/YYYY-MM-DD/g, today);
-    fs.writeFileSync(todoPath, content);
+    const todoPath = path.join(target, "docs", "99_progress", "todo.md");
+    if (fs.existsSync(todoPath)) {
+      let content = fs.readFileSync(todoPath, "utf8");
+      if (content.includes("YYYY-MM-DD")) {
+        content = content.replace(/YYYY-MM-DD/g, today);
+        fs.writeFileSync(todoPath, content);
+      }
+    }
   }
 
   // Add to .gitignore if exists
@@ -87,13 +118,17 @@ function main() {
   }
 
   log("");
-  log(`${BOLD}Done!${RESET} Next steps:`);
+  if (updateMode) {
+    log(`${BOLD}Done!${RESET} System files updated. Your docs are untouched.`);
+  } else {
+    log(`${BOLD}Done!${RESET} Next steps:`);
+    log("");
+    log(`  1. Edit ${CYAN}CLAUDE.md${RESET} — replace [Project Name] with yours`);
+    log(`  2. Open Claude Code and start building`);
+    log(`  3. Docs auto-update as you work`);
+  }
   log("");
-  log(`  1. Edit ${CYAN}CLAUDE.md${RESET} — replace [Project Name] with yours`);
-  log(`  2. Open Claude Code and start building`);
-  log(`  3. Docs auto-update as you work`);
-  log("");
-  log(`${DIM}Docs system: CLAUDE.md -> docs/MAP.md -> load only what's needed${RESET}`);
+  log(`${DIM}Docs system: CLAUDE.md -> docs/MAP.md -> _summary.md -> detail files${RESET}`);
   log("");
 }
 

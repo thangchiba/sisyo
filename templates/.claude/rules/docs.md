@@ -1,9 +1,13 @@
 # Doc Management Rule
 
+3-level routing: MAP.md → _summary.md → detail files.
+
 When changing code that affects project structure or behavior:
-1. Read docs/MAP.md to find related docs
-2. Update the relevant doc (or create if new)
-3. Update that doc summary line in MAP.md
+1. Read docs/MAP.md to find relevant folder
+2. Read _summary.md of that folder (if exists)
+3. Update detail file (or create if new)
+4. Update _summary.md table
+5. Update MAP.md summary line
 
 Before ending session or when context gets large:
 - Write docs/99_progress/handoff.md
