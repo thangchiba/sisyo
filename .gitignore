@@ -1,4 +1,5 @@
 .DS_Store
 node_modules/
 *.tgz
-.claude
+/.claude
+templates/.claude/skills/*/node_modules/

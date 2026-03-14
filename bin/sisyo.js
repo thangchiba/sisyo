@@ -17,12 +17,28 @@ function info(msg) { log(`${DIM}  ${msg}${RESET}`); }
 
 // System files that get replaced on --update
 const SYSTEM_FILES = [
+  "SISYO.md",
   ".claude/rules/docs.md",
   ".claude/skills/vibe-docs/SKILL.md",
 ];
 
 function isSystemFile(relativePath) {
   return SYSTEM_FILES.some(f => relativePath === f || relativePath.endsWith(f));
+}
+
+function ensureClaudeMdImport(target) {
+  const claudePath = path.join(target, "CLAUDE.md");
+  const importLine = "@SISYO.md";
+  if (fs.existsSync(claudePath)) {
+    const content = fs.readFileSync(claudePath, "utf8");
+    if (!content.includes(importLine)) {
+      fs.appendFileSync(claudePath, `\n${importLine}\n`);
+      up("CLAUDE.md (added @SISYO.md import)");
+    }
+  } else {
+    fs.writeFileSync(claudePath, `${importLine}\n`);
+    ok("CLAUDE.md");
+  }
 }
 
 function copyDir(src, dest, { updateMode = false } = {}) {
@@ -71,6 +87,9 @@ function main() {
 
   // Copy all templates
   copyDir(templatesDir, target, { updateMode });
+
+  // Ensure CLAUDE.md imports SISYO.md
+  ensureClaudeMdImport(target);
 
   // Get today's date
   const today = new Date().toISOString().split("T")[0];
@@ -123,12 +142,12 @@ function main() {
   } else {
     log(`${BOLD}Done!${RESET} Next steps:`);
     log("");
-    log(`  1. Edit ${CYAN}CLAUDE.md${RESET} — replace [Project Name] with yours`);
+    log(`  1. Edit ${CYAN}SISYO.md${RESET} — replace [Project Name] with yours`);
     log(`  2. Open Claude Code and start building`);
     log(`  3. Docs auto-update as you work`);
   }
   log("");
-  log(`${DIM}Docs system: CLAUDE.md -> docs/MAP.md -> _summary.md -> detail files${RESET}`);
+  log(`${DIM}Docs system: SISYO.md -> docs/MAP.md -> _summary.md -> detail files${RESET}`);
   log("");
 }
 
