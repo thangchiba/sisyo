@@ -9,6 +9,9 @@ When changing code that affects project structure or behavior:
 4. Update _summary.md table
 5. Update MAP.md summary line
 
+When a feature is completed or added:
+- Log it in docs/99_progress/features.md (date, name, status, link to spec)
+
 Before ending session or when context gets large:
 - Write docs/99_progress/handoff.md
 

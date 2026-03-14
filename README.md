@@ -15,7 +15,8 @@ Run it in your project root.
 
 ```
 your-project/
-  CLAUDE.md                            # Project rules (auto-loaded)
+  SISYO.md                             # Project rules (imported by CLAUDE.md)
+  CLAUDE.md                            # Auto-created or updated with @SISYO.md
   .claude/
     rules/docs.md                      # Doc rules (auto-loaded)
     skills/vibe-docs/SKILL.md          # Brain (loaded on trigger)
@@ -23,7 +24,10 @@ your-project/
     MAP.md                             # Level 1: routing table
     99_progress/todo.md                # Task backlog
     99_progress/handoff.md             # Session recovery
+    99_progress/features.md            # Feature log
 ```
+
+`SISYO.md` holds the project config. `CLAUDE.md` is untouched if it already exists — sisyo just appends `@SISYO.md` to it.
 
 ## How it works
 
@@ -61,6 +65,7 @@ MAP.md
 ### Auto-triggers
 
 The vibe-docs skill triggers automatically when you:
+- Complete a feature -> logs to `99_progress/features.md`
 - Design database tables -> updates `03_database/_summary.md` + detail file
 - Add API endpoints -> updates `04_api/_summary.md` + detail file
 - Plan features -> updates `01_requirements/_summary.md` + detail file
@@ -80,6 +85,14 @@ Read handoff and continue
 ```
 Claude reads MAP.md + handoff.md + todo.md (~3K tokens) and picks up where you left off.
 
+## Update
+
+```bash
+npx sisyo --update
+```
+
+Updates system files (`SISYO.md`, `.claude/rules/docs.md`, `vibe-docs/SKILL.md`) without touching your docs.
+
 ## Doc folders
 
 | Folder | Purpose |
@@ -94,14 +107,24 @@ Claude reads MAP.md + handoff.md + todo.md (~3K tokens) and picks up where you l
 | `07_testing/` | Test plans, test cases, edge cases |
 | `08_security/` | Auth flows, permissions, API keys |
 | `09_integrations/` | Third-party services config & usage |
-| `99_progress/` | TODO, changelog, session handoff |
+| `99_progress/` | Feature log, TODO, session handoff |
 
 Each folder with multiple items has a `_summary.md` (compact table) + detail files.
 Folders are created on-demand. No empty placeholders.
 
+## Skills
+
+Optional best-practice guides that Claude loads on demand:
+
+| Skill | Triggers on |
+|---|---|
+| `vibe-docs` | Doc updates, feature changes, session end |
+| `fastapi-best-practices` | FastAPI backends, REST APIs, Python web services |
+| `react-page-oriented` | React/Next.js pages, component structure |
+
 ## After install
 
-1. Edit `CLAUDE.md` - replace `[Project Name]` with yours
+1. Edit `SISYO.md` — replace `[Project Name]` with yours
 2. Open Claude Code and start building
 3. Docs update automatically as you work
 

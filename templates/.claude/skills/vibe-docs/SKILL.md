@@ -149,6 +149,7 @@ Rules for MAP.md entries:
 | Wrote/planned tests            | 07_testing/[module].md          | Test cases, edge cases, coverage notes, test commands  | yes      |
 | Set up auth/permissions/keys   | 08_security/[topic].md          | Auth flow, roles, permissions, API keys, secrets mgmt  | yes      |
 | Integrated third-party service | 09_integrations/[service].md    | Service config, API keys, SDK usage, webhooks, limits  | yes      |
+| Completed a feature            | 99_progress/features.md         | Date, feature name, status, link to spec doc           | yes      |
 | Completed any task             | 99_progress/todo.md             | Task status: doing, next, done with dates              | yes      |
 | Ending session or /clear       | 99_progress/handoff.md          | Session summary, current state, next steps, decisions  | yes      |
 

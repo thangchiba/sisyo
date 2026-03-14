@@ -122,6 +122,15 @@ function main() {
         fs.writeFileSync(todoPath, content);
       }
     }
+
+    const featuresPath = path.join(target, "docs", "99_progress", "features.md");
+    if (fs.existsSync(featuresPath)) {
+      let content = fs.readFileSync(featuresPath, "utf8");
+      if (content.includes("YYYY-MM-DD")) {
+        content = content.replace(/YYYY-MM-DD/g, today);
+        fs.writeFileSync(featuresPath, content);
+      }
+    }
   }
 
   // Add to .gitignore if exists
