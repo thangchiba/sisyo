@@ -120,6 +120,7 @@ Optional best-practice guides that Claude loads on demand:
 |---|---|
 | `vibe-docs` | Doc updates, feature changes, session end |
 | `html-docs` | Generate polished HTML docs (Tailwind, colorful, rounded modern) for devs/users |
+| `terraform-best-practices` | Terraform/AWS: never auto-apply, cost confirm, plan summary, module layout, IAM/SGR/secrets rules |
 | `fastapi-best-practices` | FastAPI backends, REST APIs, Python web services |
 | `react-page-oriented` | React/Next.js pages, component structure |
 
