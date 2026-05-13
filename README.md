@@ -119,6 +119,7 @@ Optional best-practice guides that Claude loads on demand:
 | Skill | Triggers on |
 |---|---|
 | `vibe-docs` | Doc updates, feature changes, session end |
+| `html-docs` | Generate polished HTML docs (Tailwind, colorful, rounded modern) for devs/users |
 | `fastapi-best-practices` | FastAPI backends, REST APIs, Python web services |
 | `react-page-oriented` | React/Next.js pages, component structure |
 
@@ -130,7 +131,7 @@ Optional best-practice guides that Claude loads on demand:
 
 ## Author
 
-HoangThang - [hoang.jp](https://hoang.jp)
+HoangThang - [blog.thangchiba.com](https://blog.thangchiba.com)
 
 ## License
 
