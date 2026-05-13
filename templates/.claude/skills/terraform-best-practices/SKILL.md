@@ -101,24 +101,30 @@ infra/
       route_tables.tf
       variables.tf
       outputs.tf
-    ec2/
-      main.tf               # instance / launch template
+    ec2/                    # module groups everything the EC2 service needs
+      main.tf               # instance / launch template / ASG
       iam.tf                # instance profile + role + policy
-      sg.tf                 # service-specific SG (calls into network sg if needed)
+      sg.tf                 # service-specific SG
+      s3.tf                 # (optional) bucket the app reads/writes
+      ssm.tf                # (optional) params the app loads at boot
+      kms.tf                # (optional) key used to encrypt its own data
       variables.tf
       outputs.tf
     rds/
-    s3/
-    kms/
-    ssm/
+    network/
 ```
 
-Rules:
+Rules — guidelines, not laws:
+
 - **One `.tf` per service** at the env level (`ec2.tf`, `rds.tf`, …). Easier to grep, easier to PR.
-- **Inside a module, split by component** (`iam.tf`, `sg.tf`, `main.tf`). Each component readable on its own.
-- **Network module aggregates** VPC, subnets, SG, SGR, NAT, route tables. Other modules consume its outputs (vpc_id, subnet_ids, sg_ids).
+- **Inside a module, split files by component**, not by AWS service category. The point is readability — keep each file focused on one concern of the module.
+- **A module owns the resources its task needs.** If the `ec2` module's app reads from an S3 bucket and loads SSM params, that bucket and those params live **inside** `modules/ec2/` (`s3.tf`, `ssm.tf`). Don't force them out into a separate `modules/s3/` just because they're S3 — separation by AWS service is artificial.
+- **When to extract a separate module instead:** the resource is genuinely shared by 2+ unrelated callers, has its own lifecycle, or belongs to a different team's domain. Otherwise keep it co-located with the consumer.
+- **Network module aggregates** VPC, subnets, SG, SGR, NAT, route tables — because everyone consumes its outputs. Other modules call into it for `vpc_id`, `subnet_ids`, base `sg_ids`.
 - Module must be **env-agnostic** — env-specific values come in as variables.
-- No `count`/`for_each` tricks in env layer when a separate file would be clearer.
+- No `count` / `for_each` gymnastics in the env layer when a separate file would be clearer.
+
+Heuristic for "module or env file?": if the resource is only meaningful **with** the service (its IAM role, its bucket, its SSM param), put it in the module. If it's a foundational layer that many services share (VPC, central KMS key, shared S3 data lake), put it in its own module or at the env layer.
 
 ## Lifecycle — prevent destroy on stateful
 
@@ -320,6 +326,9 @@ A: modules/network/vpc.tf — called from env/<env>/network.tf.
 
 Q: Where do I put a new EC2 service?
 A: env/<env>/<service>.tf calling modules/ec2/, with service-specific vars.
+
+Q: My EC2 module's app needs an S3 bucket + a KMS key for its own data. Separate modules?
+A: No — put s3.tf and kms.tf inside modules/ec2/. The bucket/key only exist to serve this service. Extract to its own module only when 2+ unrelated callers share it.
 
 Q: New SGR, what fields?
 A: type, from_port, to_port, protocol, sg id, source, AND description (who/from/to/proto/why).
