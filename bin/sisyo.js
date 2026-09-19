@@ -42,7 +42,12 @@ const NEW_SUFFIX = ".sisyo-new";
 
 function toPosix(p) { return p.split(path.sep).join("/"); }
 function isManaged(rel) { return rel.startsWith(".claude/") && rel !== MANIFEST_REL; }
-function sha256(buf) { return crypto.createHash("sha256").update(buf).digest("hex"); }
+// Hash with line endings normalized: git autocrlf rewrites LF <-> CRLF on checkout, and
+// that must not make an untouched file look "modified locally".
+function sha256(buf) {
+  const text = buf.toString("utf8").replace(/\r\n/g, "\n");
+  return crypto.createHash("sha256").update(text).digest("hex");
+}
 function hashFile(p) { return sha256(fs.readFileSync(p)); }
 
 function readManifest(target) {
