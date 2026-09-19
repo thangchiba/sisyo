@@ -1,0 +1,53 @@
+# Troubleshooting
+
+Symptom → cause → fix. Check the **live** model first: `.env` on the server overrides code
+defaults and deploy does not rewrite it. Verify via the token / health endpoint `model` field.
+
+## Request errors (400)
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| 400 mentioning `thinking_budget` | 3.5+/3.8 dropped it | `thinking_config={"thinking_level": "low"}` |
+| 400 `thinking_level=minimal` | Only 3.1 Live accepts `minimal` | Use `low` on 3.5+/3.8 |
+| 400 on `temperature` / `top_p` / `top_k` / `candidate_count` | Deprecated on 3.x | Remove them |
+| 400 "function response … id/name" on the next turn | A `FunctionResponse` without `id` + `name`, or a call left unanswered | Accumulate calls across chunks; answer every call; include id + name |
+| Multi-turn tool calls fail after a model bump | Old `google-genai` without thought signatures | `google-genai>=2.0.0` |
+
+## Chat behaviour
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Reply ignores earlier tool results | One `send_message_stream` per response | Send all responses as ONE `parts` list |
+| `chunk.text` raises / empty | Chunk carries only function calls | `_safe_get_text()` wrapper |
+| Chat got slower after bump | `thinking_level=medium` or generate model used on chat path | `low`; chat/rerank on flash-lite |
+| `[Echo] …` replies in prod | `GEMINI_API_KEY` empty on that box | Set the key; echo is the stub mode |
+| Embeddings: N chunks → 1 vector | Passed a list to `contents` | Embed one text per call |
+| Search results nonsense after embedding model change | Vector space changed | Re-embed everything (`--recreate`) |
+
+## Live voice
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| "Connecting…" forever, no error | `connect()` never resolves; or stale FE bundle | 15 s timeout race; log a build marker on `connect()`; hard reload |
+| Socket closed **1007** right after mic start | `sendRealtimeInput({ media })` on 3.1 | Use `{ audio }` |
+| Token endpoint 402 | Billing / Live API not enabled for the key | Enable in AI Studio; log exception on mint |
+| Token endpoint 404 "Agent not found" for a real agent | Router caught `LookupError` base (KeyError/IndexError inside) or stale negative cache | Catch a dedicated `AgentNotFound`; short negative-cache TTL; `ConsistentRead` |
+| Token endpoint 403 | `voice_enabled` false on agent or plan | Expected — hide the voice toggle in the UI |
+| Connected but silent | `AudioContext` suspended (not from a user gesture) | `await ctx.resume()` after creating it |
+| Wrong voice every other session | FE didn't pass `speechConfig` on `connect` | Pass `voice_name` from the token response |
+| Model goes silent after a tool call | Sync function calling; a tool threw and never answered | Respond `{ error }` for failed tools, all in one `sendToolResponse` |
+| No farewell, UI stuck after `end_conversation` | Disconnected inside the tool handler | Mute mic, send response, wait `turnComplete` + audio drain, then close |
+| Greets in the wrong language | Greeting text sent as a user turn → model mirrors it | Send a `[Session start]` control turn; put the greeting rule in the system prompt |
+| Only first audio part plays | 3.1 sends multiple parts per event | Loop over all `parts` |
+| Mid-session text ignored on 3.1 | Used `sendClientContent` | `sendRealtimeInput({ text })` |
+| Voice sample button slow / times out | TTS on demand | Pre-generate at startup, cache on S3, key by version |
+
+## Rollback values
+
+| Key | Rollback |
+|---|---|
+| `GEMINI_CHAT_MODEL` | `gemini-3.1-flash-lite-preview` (`low` valid there too) |
+| `GEMINI_LIVE_MODEL` | `gemini-2.5-flash-native-audio-preview-12-2025` (async tools, `thinking_budget`, `media` field) |
+| `GEMINI_EMBEDDING_MODEL` | Previous model **plus** full re-embed — no hot rollback |
+
+Always record the rollback + the date of the bump in `docs/09_integrations/gemini.md`.

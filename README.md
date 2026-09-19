@@ -88,10 +88,31 @@ Claude reads MAP.md + handoff.md + todo.md (~3K tokens) and picks up where you l
 ## Update
 
 ```bash
-npx sisyo --update
+npx sisyo --update              # update managed files, keep everything you edited
+npx sisyo --update --dry-run    # show what would change, write nothing
+npx sisyo --update --force      # also overwrite managed files you edited locally
 ```
 
-Updates system files (`SISYO.md`, `.claude/rules/docs.md`, `vibe-docs/SKILL.md`) without touching your docs.
+sisyo splits files into two groups so frequent updates never clobber your work:
+
+| Group | Files | On `--update` |
+|---|---|---|
+| **Managed** (sisyo-owned) | `.claude/rules/docs.md`, `.claude/skills/*` | Replaced **only if** your copy is byte-identical to what sisyo last installed. New skills are added. Skills sisyo dropped are removed only if untouched. |
+| **Yours** | `SISYO.md`, `CLAUDE.md`, `docs/**` | Never touched. Missing files are created once. |
+
+Hashes of every managed file are recorded in `.claude/sisyo.json` (commit it). If you edited a
+managed file, `--update` keeps your version and writes the new one next to it as
+`<file>.sisyo-new` (gitignored) so you can diff and decide:
+
+```bash
+git diff --no-index .claude/skills/vibe-docs/SKILL.md .claude/skills/vibe-docs/SKILL.md.sisyo-new
+```
+
+Move the `.sisyo-new` file over the original to accept, delete it to keep yours, or rerun with
+`--force` to accept all.
+
+**Tip:** put project-specific rules in `SISYO.md` or your own `.claude/rules/<topic>.md`
+rather than editing a shipped skill — those files are yours and update-proof.
 
 ## Doc folders
 
@@ -123,6 +144,7 @@ Optional best-practice guides that Claude loads on demand:
 | `terraform-best-practices` | Terraform/AWS: never auto-apply, cost confirm, plan summary, module layout, IAM/SGR/secrets rules |
 | `fastapi-best-practices` | FastAPI backends, REST APIs, Python web services |
 | `react-page-oriented` | React/Next.js pages, component structure |
+| `gemini-integration` | Google Gemini API: model roles via config keys, 3.x request rules, streaming chat + tools, Live voice (ephemeral token, sync tool calls), embeddings/rerank, JSON mode, grounding, PDF, TTS, troubleshooting |
 
 ## After install
 
