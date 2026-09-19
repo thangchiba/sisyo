@@ -1,9 +1,13 @@
 {
   "name": "sisyo",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Smart documentation system for vibe coding with Claude Code. Token-efficient MAP.md routing.",
   "bin": {
     "sisyo": "./bin/sisyo.js"
+  },
+  "scripts": {
+    "hashes": "node scripts/gen-known-hashes.js",
+    "prepublishOnly": "node scripts/gen-known-hashes.js"
   },
   "files": [
     "bin/",

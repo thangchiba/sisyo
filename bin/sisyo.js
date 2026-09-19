@@ -50,6 +50,12 @@ function sha256(buf) {
 }
 function hashFile(p) { return sha256(fs.readFileSync(p)); }
 
+// Hashes of every version of each managed file sisyo has ever shipped (from git history).
+// Lets an install that predates the manifest (< v1.6) be recognised as untouched.
+function readKnownHashes() {
+  try { return require(path.join(__dirname, "known-hashes.json")); } catch { return {}; }
+}
+
 function readManifest(target) {
   const p = path.join(target, MANIFEST_REL);
   if (!fs.existsSync(p)) return null;
@@ -94,7 +100,7 @@ function ensureClaudeMdImport(target, dryRun) {
   }
 }
 
-function fillDates(target) {
+function fillDates(target, onlyRels) {
   const today = new Date().toISOString().split("T")[0];
   const files = [
     "docs/MAP.md",
@@ -103,6 +109,7 @@ function fillDates(target) {
     "docs/99_progress/features.md",
   ];
   for (const rel of files) {
+    if (!onlyRels.has(rel)) continue;          // never rewrite docs that already existed
     const p = path.join(target, rel);
     if (!fs.existsSync(p)) continue;
     const content = fs.readFileSync(p, "utf8");
@@ -150,12 +157,14 @@ function main() {
   const prevFiles = manifest ? manifest.files : {};
   const nextFiles = {};
   const conflicts = [];
+  const known = readKnownHashes();
+  const addedRels = new Set();
   let updated = 0, added = 0, unchanged = 0;
 
   if (updateMode && manifest) info(`installed: v${manifest.version} → v${PKG.version}`);
   if (updateMode && !manifest) {
-    info("no manifest found (installed before v1.6). Files that differ from the new");
-    info("templates are treated as locally modified — review *.sisyo-new or use --force.");
+    info("no manifest found (installed before v1.6). Files identical to an older sisyo");
+    info("release are updated; anything else is treated as locally modified.");
   }
 
   const templates = listTemplateFiles(templatesDir);
@@ -173,6 +182,7 @@ function main() {
       }
       if (managed) nextFiles[rel] = srcHash;
       ok(rel);
+      addedRels.add(rel);
       added++;
       continue;
     }
@@ -198,7 +208,11 @@ function main() {
       continue;
     }
 
-    const pristine = prevFiles[rel] !== undefined && prevFiles[rel] === curHash;
+    // Untouched = identical to what the manifest says sisyo installed, or (no manifest
+    // entry, i.e. installed before v1.6) identical to some version sisyo once shipped.
+    const pristine = prevFiles[rel] !== undefined
+      ? prevFiles[rel] === curHash
+      : (known[rel] || []).includes(curHash);
     if (pristine || force) {
       if (!dryRun) {
         fs.writeFileSync(dest, srcBuf);
@@ -238,7 +252,7 @@ function main() {
   }
 
   ensureClaudeMdImport(target, dryRun);
-  if (!updateMode && !dryRun) fillDates(target);
+  if (!dryRun) fillDates(target, addedRels);
   ensureGitignore(target, dryRun);
   if (!dryRun) writeManifest(target, nextFiles);
 

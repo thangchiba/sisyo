@@ -1,0 +1,62 @@
+{
+ ".claude/rules/docs.md": [
+  "1fc7e7ee81314cc57313919e3dcbd61c1c9abf271cb2728987a4650626c55cf2",
+  "2b89b91bdcee96353280b6f505be6c0909975d0aab8f5f4726a504b3c1fcbc05",
+  "e71d422d61809dbd3e1e9c1ed4b700bc145928265538d94974e8536fe99fa5dc"
+ ],
+ ".claude/skills/fastapi-best-practices/ASYNC-PATTERNS.md": [
+  "7f4564de67ec06137b27066d965b2322d611653f1fd7137fcffe93154ca3f467"
+ ],
+ ".claude/skills/fastapi-best-practices/DATABASE.md": [
+  "800602caae2350f09a9438b0e1ff7fb8cd7b2bbc32f427ef58477e218ffb6fda"
+ ],
+ ".claude/skills/fastapi-best-practices/DEPENDENCIES.md": [
+  "411ec97878b94378229f28805a94a258af96557204439e12df6db0e6f82f0235"
+ ],
+ ".claude/skills/fastapi-best-practices/PROJECT-STRUCTURE.md": [
+  "66158e46de6d48125ddc9e1396a6fc70f361f29e12aebbcc20231bf51d70e813"
+ ],
+ ".claude/skills/fastapi-best-practices/PYDANTIC-GUIDE.md": [
+  "833ac269f41c3e5d02ae1c27619a44a782f6f79d5b0d0f42d8ecb14bdec444af"
+ ],
+ ".claude/skills/fastapi-best-practices/SKILL.md": [
+  "6d0424f4c7c8782cac6a1ffeed47d7187f92469e6c92fa76a499f275f571dfb9"
+ ],
+ ".claude/skills/gemini-integration/GENERATE.md": [
+  "422c523decaec584f7059f8b31e288b358dfde268da427afeeeb265b8a2e8050"
+ ],
+ ".claude/skills/gemini-integration/LIVE-VOICE.md": [
+  "50f6d7f89ae59ed95c55b6d1d1f31bf80554ed6e6458444c76c2a2aec9f75ec3"
+ ],
+ ".claude/skills/gemini-integration/RAG-EMBEDDING.md": [
+  "5404eb9469add0af8956fe1803b451d3b9726607739ef9f61058777d0f89bca6"
+ ],
+ ".claude/skills/gemini-integration/SKILL.md": [
+  "345d6aba2a3c9f0dcf62c8e4b3a11cae531637b34d0b934df206e40876f0d2b1"
+ ],
+ ".claude/skills/gemini-integration/TEXT-CHAT.md": [
+  "165c30a0e85f9dcbb9889b1d20dc5ebd54082b05a07d646699dada3c80b72417"
+ ],
+ ".claude/skills/gemini-integration/TROUBLESHOOTING.md": [
+  "36d519a3754a81862b3c1c080c8fcf16635820d3f7ef3f09625fc1a7195d7266"
+ ],
+ ".claude/skills/html-docs/SKILL.md": [
+  "8414e0166d4403fff509302f2973a8765441529584d710249eb1bf887e89caf2",
+  "a307853ca9bad1e0335cea6c477400048e2d17fcecaedd79b5b58b481666cbdf"
+ ],
+ ".claude/skills/react-page-oriented/SKILL.md": [
+  "dd57426f6be595b65b263b754e2c8c9cabce9e3ce332e80cbb1ddcebfab89e81"
+ ],
+ ".claude/skills/react-page-oriented/triggers.md": [
+  "489db92a891306ab76093c2d41681f3bff1a8343329179ca913f87405c661aaf"
+ ],
+ ".claude/skills/terraform-best-practices/SKILL.md": [
+  "4cd2cbf59c8d8755bf1b1c0f12553feb1ca7258ce44e5e91cf6baee3f0e23149",
+  "85eee170ef76a0d17ed7f44037cf4421eb879b74dce4fd452066f59c275d9616"
+ ],
+ ".claude/skills/vibe-docs/SKILL.md": [
+  "5bf3ef21df2315575479a610a15f935010673e74de3523c888e74a6c3f78b105",
+  "ba3f7176b4ae7088b0ebbfa08bfe8b06729bab6acaddb9b489a8a46233f62fc6",
+  "db40c330b6b19b5b78f8a28c6611d6db917ea225bbc316fd8fb5e881331e7ac5"
+ ]
+}
