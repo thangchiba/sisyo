@@ -144,7 +144,7 @@ Optional best-practice guides that Claude loads on demand:
 | `terraform-best-practices` | Terraform/AWS: never auto-apply, cost confirm, plan summary, module layout, IAM/SGR/secrets rules |
 | `fastapi-best-practices` | FastAPI backends, REST APIs, Python web services |
 | `react-page-oriented` | React/Next.js pages, component structure |
-| `gemini-integration` | Google Gemini API: model roles via config keys, 3.x request rules, streaming chat + tools, Live voice (ephemeral token, sync tool calls), embeddings/rerank, JSON mode, grounding, PDF, TTS, troubleshooting |
+| `gemini-integration` | Google Gemini API: model roles via config keys, 3.x request rules, streaming chat + tools, Live voice (ephemeral token, gemini-3.8-live async tools / 3.1 sync), structured tool results, embeddings/rerank, JSON mode, grounding, PDF, TTS, troubleshooting |
 
 ## After install
 

@@ -55,11 +55,14 @@ Ask the **chat** model (fast, cheap) to score candidates as JSON. Good up to ~20
 beyond that use a dedicated reranker.
 
 ```python
-_SYS = ("You are a relevance reranker. Given a user query and candidate passages, score each "
-        "0.0–1.0 for relevance. Return ONLY valid JSON: {\"scores\": [{\"id\": \"...\", \"score\": 0.85}]}")
+_SYS = ("You are a relevance reranker. Given a user query and numbered candidate passages, score "
+        "each 0.0–1.0 for relevance. Return ONLY valid JSON, using the passage numbers as ids: "
+        "{\"scores\": [{\"id\": 0, \"score\": 0.85}]}")
 
+# Number the candidates — echoing a 36-char chunk UUID per candidate roughly triples the JSON
+# the model must write, and output length dominates rerank latency.
 prompt = "\n".join([f"Query: {query}", "Candidates:"] +
-                   [f"- id: {c.id}\n  text: {c.text[:600]}" for c in candidates])
+                   [f"[{i}] {c.text[:600]}" for i, c in enumerate(candidates)])
 
 resp = client.models.generate_content(
     model=settings.GEMINI_CHAT_MODEL,
@@ -67,11 +70,18 @@ resp = client.models.generate_content(
     config={
         "system_instruction": _SYS,
         "response_mime_type": "application/json",
-        "thinking_config": {"thinking_level": settings.GEMINI_CHAT_THINKING_LEVEL},
+        "thinking_config": {"thinking_level": settings.GEMINI_CHAT_THINKING_LEVEL},  # minimal on flash-lite
     },
 )
-scores = {s["id"]: float(s["score"]) for s in _parse_json(resp.text or "").get("scores", [])
-          if isinstance(s, dict) and isinstance(s.get("id"), str)}
+scores: dict[int, float] = {}
+for s in _parse_json(resp.text or "").get("scores", []):
+    try:
+        i, sc = int(float(str(s["id"]).strip("[] "))), float(s["score"])   # 3, "3", "[3]"
+    except (TypeError, ValueError, KeyError, OverflowError):
+        continue
+    if 0 <= i < len(candidates):
+        scores[i] = sc
+order = sorted(range(len(candidates)), key=lambda i: scores.get(i, 0.0), reverse=True)  # stable
 ```
 
 Rules:

@@ -1,6 +1,6 @@
 ---
 name: gemini-integration
-description: "Google Gemini API integration rules (google-genai Python / @google/genai JS): model roles per use case (chat, generate, embedding, TTS, Live voice) via env config keys, singleton client, echo stub when no API key, Gemini 3.x request rules (thinking_level not thinking_budget, no temperature/top_p, FunctionResponse needs id+name, accumulate function calls across stream chunks, send all tool results in ONE message), server-side text chat with SSE streaming, client-side Live voice via ephemeral token (sync tool calls on 3.1, sendRealtimeInput audio, PCM 16k in / 24k out), embeddings (one text per call, Matryoshka dims, re-embed on model change), LLM reranker, JSON mode, google_search / url_context grounding, PDF extract, TTS. Triggers on any Gemini / genai / GEMINI_* code, voice chat, RAG embedding, or user saying 'gemini', 'live api', 'function calling'."
+description: "Google Gemini API integration rules (google-genai Python / @google/genai JS): model roles per use case (chat, generate, embedding, TTS, Live voice) via env config keys, singleton client, echo stub when no API key, Gemini 3.x request rules (thinking_level not thinking_budget, no temperature/top_p, FunctionResponse needs id+name, accumulate function calls across stream chunks, send all tool results in ONE message), server-side text chat with SSE streaming, client-side Live voice via ephemeral token (gemini-3.8-live: NON_BLOCKING tools by default, no thinking_level; per-model-family setup; sendRealtimeInput audio, PCM 16k in / 24k out), structured tool results (status/retryable/guidance), embeddings (one text per call, Matryoshka dims, re-embed on model change), LLM reranker, JSON mode, google_search / url_context grounding, PDF extract, TTS. Triggers on any Gemini / genai / GEMINI_* code, voice chat, RAG embedding, or user saying 'gemini', 'live api', 'function calling'."
 license: MIT
 metadata:
   author: HoangThang
@@ -26,7 +26,7 @@ imports `google.genai` / `@google/genai` or reads a `GEMINI_*` setting.
 |---|---|
 | `TEXT-CHAT.md` | Server-side chat session, streaming to SSE, tool loop |
 | `GENERATE.md` | One-shot generate: JSON mode, google_search / url_context grounding, PDF extract, TTS |
-| `LIVE-VOICE.md` | Client-side voice via Live API: ephemeral token, WebSocket, audio, sync tool calls |
+| `LIVE-VOICE.md` | Client-side voice via Live API: ephemeral token, WebSocket, audio, async (3.8) / sync (3.1) tool calls, 2.5 → 3.1 → 3.8 differences |
 | `RAG-EMBEDDING.md` | Embeddings for vector search + LLM reranker |
 | `TROUBLESHOOTING.md` | An error code or a hang you need to map to a cause |
 
@@ -41,8 +41,8 @@ roll back via `.env` without a deploy.
 | Agent / Q&A generation, PDF extract | `gemini-3.8-flash` | `GEMINI_GENERATE_MODEL` | `google-genai` (Python) |
 | TTS sample clips | `gemini-2.5-flash-preview-tts` | `GEMINI_TTS_MODEL` | `google-genai` (Python) |
 | Embedding (RAG) | `gemini-embedding-2` | `GEMINI_EMBEDDING_MODEL` | `google-genai` (Python) |
-| Voice chat (Live) | `gemini-3.1-flash-live-preview` | `GEMINI_LIVE_MODEL` | `@google/genai` (JS, browser) |
-| Chat thinking level | `low` | `GEMINI_CHAT_THINKING_LEVEL` | — |
+| Voice chat (Live) | `gemini-3.8-live` | `GEMINI_LIVE_MODEL` | `@google/genai` (JS, browser) |
+| Chat thinking level | `minimal` | `GEMINI_CHAT_THINKING_LEVEL` | — |
 
 - Cheap/fast model for anything on the interactive path (chat, rerank, summary).
 - Bigger model only for offline / admin generation and document extraction.
@@ -54,9 +54,9 @@ roll back via `.env` without a deploy.
 # config.py (pydantic-settings style)
 GEMINI_API_KEY: str = ""
 GEMINI_CHAT_MODEL: str = "gemini-3.5-flash-lite"
-GEMINI_CHAT_THINKING_LEVEL: str = "low"      # low | medium | high  (3.5+/3.8; minimal is 3.1-Live only)
+GEMINI_CHAT_THINKING_LEVEL: str = "minimal"  # 3.5 Flash-Lite default + fastest; 3.7/3.8 Flash reject it → "low"
 GEMINI_GENERATE_MODEL: str = "gemini-3.8-flash"
-GEMINI_LIVE_MODEL: str = "gemini-3.1-flash-live-preview"
+GEMINI_LIVE_MODEL: str = "gemini-3.8-live"   # rollback: gemini-3.1-flash-live-preview (sync tools)
 GEMINI_TTS_MODEL: str = "gemini-2.5-flash-preview-tts"
 GEMINI_EMBEDDING_MODEL: str = "gemini-embedding-2"
 EMBEDDING_DIM: int = 768
@@ -98,8 +98,10 @@ When `GEMINI_API_KEY` is empty the app must still boot and the UI must still be 
 Apply to every `generate_content` / `chats.create` / `embed_content` on 3.5+ / 3.8:
 
 - **`thinking_budget` is NOT supported.** Use `thinking_config={"thinking_level": ...}`.
-  3.8 Flash rejects `thinking_level="minimal"` with 400 — use `low`. `minimal` is valid only
-  on 3.1 Live. `medium` is noticeably slower for a support chat.
+  Levels differ per model: 3.5 Flash-Lite accepts `minimal` (its default, the fastest);
+  3.7/3.8 Flash reject `minimal` with 400 — use `low` — and default to `medium`, which is
+  noticeably slower for a support chat. Live: 3.1 takes `thinking_level` (`minimal`),
+  `gemini-3.8-live` takes **no** `thinking_level` at all (omit `thinking_config`).
 - **Do NOT send** `temperature`, `top_p`, `top_k`, `candidate_count` — deprecated on 3.x.
 - Every `FunctionResponse` **must carry `id` + `name`**, or the next turn is rejected.
 - **Accumulate function calls across ALL stream chunks** — parallel calls can span chunks;
@@ -122,6 +124,12 @@ Apply to every `generate_content` / `chats.create` / `embed_content` on 3.5+ / 3
   after the farewell turn (see `LIVE-VOICE.md`).
 - A tool that throws must still answer with `{"error": "..."}` — a missing response makes the
   model wait forever.
+- Return **structured** results, never `{}` / `None`: `status` (`ok` | `no_results` |
+  `invalid_argument` | `error`), plus `retryable` and a model-facing `guidance` sentence when
+  nothing usable came back. Gemini 3.8 Live re-queries with rephrased variations on an
+  unexplained empty result. Keep any `message` short if an admin UI shows it verbatim.
+- `behavior` (`BLOCKING` / `NON_BLOCKING`) is a Live-only declaration field — add it while
+  building the Live token config, not to the shared `TOOL_DEFINITIONS` text chat also sends.
 
 ## 6. Security
 
