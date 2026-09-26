@@ -23,6 +23,12 @@ FE  toolCall → POST /api/tools/execute → sendToolResponse({ functionResponse
 scheduling), `thinking_level` `low | medium | high` (no `minimal`), and `turnComplete` no longer
 means idle — read `interaction_status` (`@google/genai` ≥ 2.17).
 
+**Voice agents with an open mic: declare every tool `BLOCKING` on 3.8.** Async
+(`NON_BLOCKING`) searches were tried in production and dropped: the model's filler speech was
+said only sometimes, leaked back into the mic as "user speech", the server then cancelled the
+pending call (`toolCallCancellation`) and some turns never got an answer. Blocking = silent
+until the result is in, then always an answer; show a "fetching data" state in the UI instead.
+
 ```python
 def _live_family(model: str) -> str:
     for family in ("2.5", "3.1"):
@@ -39,14 +45,12 @@ Branching on `"3.1" in model` breaks the day the model id changes: a 3.8 id then
 ```python
 from google import genai
 
-BLOCKING_TOOLS = {"end_conversation"}      # keeps the farewell → hang-up sequence synchronous
-
 def live_tools(family: str) -> list[dict]:
     decls = TOOL_DEFINITIONS
     if family == "3.8":
-        # `behavior` is Live-only — never add it to the TOOL_DEFINITIONS text chat also sends
-        decls = [{**d, "behavior": "BLOCKING" if d["name"] in BLOCKING_TOOLS else "NON_BLOCKING"}
-                 for d in TOOL_DEFINITIONS]
+        # 3.8 defaults to NON_BLOCKING — force BLOCKING for every tool (see above).
+        # `behavior` is Live-only — never add it to the TOOL_DEFINITIONS text chat also sends.
+        decls = [{**d, "behavior": "BLOCKING"} for d in TOOL_DEFINITIONS]
     return [{"function_declarations": decls}] if decls else []
 
 client = genai.Client(api_key=settings.GEMINI_API_KEY, http_options={"api_version": "v1alpha"})
@@ -167,29 +171,26 @@ if (msg.toolCall) {
 }
 ```
 
-- **BLOCKING** (3.1; `end_conversation` on 3.8): the model is **silent until every call is
-  answered** — a thrown tool must still respond. Show a "thinking" indicator from `toolCall`
-  until the next audio chunk.
-- **NON_BLOCKING** (3.8 default): the model keeps talking while the tool runs and voices the
-  result once idle — `FunctionResponse.scheduling` defaults to `WHEN_IDLE`; set it only to change
-  that (`INTERRUPT` cuts in, `SILENT` just adds context). 3.8 downgrades `INTERRUPT` to
-  `WHEN_IDLE` while the user is speaking.
-- Async tools need prompt rules in the voice block: never answer the question before the
-  results arrive, and *"If a search finds nothing, say so instead of searching again with a
+- **BLOCKING** (every tool — 3.1 has nothing else, declare it on 3.8): the model is **silent
+  until every call is answered** — a thrown tool must still respond, and the tool request needs
+  a timeout (e.g. 15 s → answer `{ error }`) or a hung backend silences the call for good.
+- Show a "fetching data" state from `toolCall` until the next audio chunk — not a spoken
+  filler. Prompt: *"A brief pause while you search is expected — do not narrate that you are
+  searching."* Anything the model says before the call just leaks back into the open mic.
+- While the tool round-trip runs, **stream silence instead of the mic** (zeroed PCM frames):
+  3.8 auto-cancels a BLOCKING call when it hears "speech" — noise or echo included — and the
+  turn then ends with no answer.
+- Prompt rule for 3.8: *"If a search finds nothing, say so instead of searching again with a
   rephrased query. Never run more than two searches in a row without speaking to the customer."*
-- The waiting phrase is **admin config per language**, like the greeting (`voice_filler` +
-  `locales[lang].voice_filler`). List every configured phrase in the voice block (*"say ONE
-  short filler, word for word, for the language you are speaking — Vietnamese: "…"; Japanese:
-  "…""*); nothing configured → *"stay silent until the results arrive"*. Never put an example
-  phrase in the prompt: an English "Let me check that for you" gets parroted and sounds
-  unnatural in Vietnamese/Japanese.
+- `NON_BLOCKING` + `FunctionResponse.scheduling` (`WHEN_IDLE` default / `INTERRUPT` / `SILENT`)
+  only make sense without an open mic (text / push-to-talk UIs).
 - Tool results are structured (`status`, `retryable`, `guidance`) — see `SKILL.md` §5.
-- Keep the voice tool path fast (retrieve-only RAG profile, no LLM rerank) — even with async
-  tools the answer can't start before the result arrives.
+- Keep the voice tool path fast (retrieve-only RAG profile, no LLM rerank) — the customer
+  hears silence for as long as it takes.
 
 ## end_conversation — hang up AFTER the farewell
 
-Keep `end_conversation` **BLOCKING** (declare it so on 3.8): the farewell audio then comes
+Keep `end_conversation` **BLOCKING** (like every tool): the farewell audio then comes
 **after** your tool response. Do not close the socket inside the tool handler (that produced no
 farewell + a UI stuck on "Connecting…").
 
@@ -229,7 +230,7 @@ end_conversation in that same turn."*
 | Mid-session text | `sendClientContent` | `sendRealtimeInput({ text })` | `sendRealtimeInput({ text })` |
 | Latency tuning | `thinking_budget` | `thinking_level: "minimal"` | none — omit `thinking_config` |
 | Server events | 1 part / event | multiple parts / event → loop over all `parts` | multiple parts / event |
-| Function calling | blocking; `NON_BLOCKING` opt-in | **sync only** | **`NON_BLOCKING` default**, `BLOCKING` per declaration, scheduling |
+| Function calling | blocking; `NON_BLOCKING` opt-in | **sync only** | `NON_BLOCKING` default — declare `BLOCKING` for voice |
 | Proactive audio / affective dialog | opt-in (`v1beta`) | not supported | always on / removed — don't configure |
 
 Fallback: `GEMINI_LIVE_MODEL=gemini-3.1-flash-live-preview`.

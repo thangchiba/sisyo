@@ -28,6 +28,7 @@
  ".claude/skills/gemini-integration/LIVE-VOICE.md": [
   "2b6639113402482608ed376ad908ae54ba2d7dfe9a2817fd169d8a766e49ed9e",
   "50f6d7f89ae59ed95c55b6d1d1f31bf80554ed6e6458444c76c2a2aec9f75ec3",
+  "5f2e40a1bad5aedc7848a52e14da67573f3e1c1ca4aec84de36c50f29719d606",
   "90a6530dacb52cfc7bdaed379df70ece3e5e71ee7b175841330bbfb8f63d2976"
  ],
  ".claude/skills/gemini-integration/RAG-EMBEDDING.md": [
@@ -36,7 +37,8 @@
  ],
  ".claude/skills/gemini-integration/SKILL.md": [
   "345d6aba2a3c9f0dcf62c8e4b3a11cae531637b34d0b934df206e40876f0d2b1",
-  "c24075202b5154a9c1821034af8cc3da8dd895ae0fba0d908f35fe2a11070532"
+  "c24075202b5154a9c1821034af8cc3da8dd895ae0fba0d908f35fe2a11070532",
+  "f5c298b3013004125b458db7c9f5971cc047e9d57c02992edc3faed7c7b3f21f"
  ],
  ".claude/skills/gemini-integration/TEXT-CHAT.md": [
   "165c30a0e85f9dcbb9889b1d20dc5ebd54082b05a07d646699dada3c80b72417"
@@ -44,6 +46,7 @@
  ".claude/skills/gemini-integration/TROUBLESHOOTING.md": [
   "3659f0d83782da3ab55921d5bdce5222d531031b4bcb51f68db6dc80b6d120eb",
   "36d519a3754a81862b3c1c080c8fcf16635820d3f7ef3f09625fc1a7195d7266",
+  "8e24e24ee5915908c204c42b094c82727bac7fb4214d54a7b30cb129ad781a6e",
   "f8f77b65bbe86dc89408b8372685acf59774df93e4fd23f3563df0f55be07b8c"
  ],
  ".claude/skills/html-docs/SKILL.md": [

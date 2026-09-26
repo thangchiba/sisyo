@@ -40,7 +40,8 @@ defaults and deploy does not rewrite it. Verify via the token / health endpoint 
 | Connected but silent | `AudioContext` suspended (not from a user gesture) | `await ctx.resume()` after creating it |
 | Wrong voice every other session | FE didn't pass `speechConfig` on `connect` | Pass `voice_name` from the token response |
 | Model goes silent after a tool call | BLOCKING call (3.1, or `behavior: BLOCKING` on 3.8); a tool threw and never answered | Respond `{ error }` for failed tools, all in one `sendToolResponse` |
-| 3.8 answers before the search result arrives / makes things up | Tools are `NON_BLOCKING` by default — the model keeps talking | Voice prompt: "one short filler, never answer before the results arrive"; keep the voice tool path fast |
+| 3.8 answers before the search result arrives / makes things up | Tools are `NON_BLOCKING` by default — the model keeps talking | Declare every tool `behavior: BLOCKING` |
+| 3.8 ran the tool but never answered | NON_BLOCKING filler leaked into the mic → server cancelled the call; or noise/echo during a BLOCKING call → auto-cancel | Tools BLOCKING, no spoken filler, stream silence instead of the mic during the tool round-trip, request `echoCancellation` |
 | 3.8 searches again and again with rephrased queries | Empty or unexplained tool result | Return `status: no_results`, `retryable: false`, `guidance`; prompt: "never more than two searches in a row" |
 | Error / odd reply after answering a tool call the customer talked over | Server cancelled it (`toolCallCancellation.ids`) | Drop responses for cancelled ids |
 | 3.8 call doesn't hang up after goodbye (grace timer fires) | Customer kept talking → the BLOCKING `end_conversation` call was auto-cancelled | Mute the mic before the tool round-trip |
@@ -49,7 +50,7 @@ defaults and deploy does not rewrite it. Verify via the token / health endpoint 
 | Only first audio part plays | 3.x sends multiple parts per event | Loop over all `parts` |
 | AI keeps talking for seconds after the customer interrupts | `interrupted` only reset `nextStartTime`; buffers already scheduled keep playing (audio arrives faster than real time) | `stop()` every scheduled `AudioBufferSourceNode` on `interrupted`; drop chunks still decoding |
 | Replies switch to the wrong language after a barge-in | Prompt rule "switch to the customer's language" + a misheard overlapping fragment | `RESPOND IN {LANG}. YOU MUST RESPOND UNMISTAKABLY IN {LANG}.`; switch only on an explicit request; stop playback on `interrupted` |
-| Waiting filler sounds unnatural (English phrase in a VI/JA call) | Example filler in the prompt gets parroted | Admin-configured filler per language; none → stay silent |
+| Waiting filler sounds unnatural / only said sometimes | Model-spoken filler (and example phrases in the prompt get parroted) | Don't use one: BLOCKING tools + a "fetching data" UI state |
 | Mid-session text ignored on 3.1 | Used `sendClientContent` | `sendRealtimeInput({ text })` (the documented text path on 3.x) |
 | Voice sample button slow / times out | TTS on demand | Pre-generate at startup, cache on S3, key by version |
 
