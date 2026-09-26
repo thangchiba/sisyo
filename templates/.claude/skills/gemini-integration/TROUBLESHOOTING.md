@@ -47,6 +47,9 @@ defaults and deploy does not rewrite it. Verify via the token / health endpoint 
 | No farewell, UI stuck after `end_conversation` | Disconnected inside the tool handler | Mute mic, send response, wait `turnComplete` + audio drain, then close |
 | Greets in the wrong language | Greeting text sent as a user turn → model mirrors it | Send a `[Session start]` control turn; put the greeting rule in the system prompt |
 | Only first audio part plays | 3.x sends multiple parts per event | Loop over all `parts` |
+| AI keeps talking for seconds after the customer interrupts | `interrupted` only reset `nextStartTime`; buffers already scheduled keep playing (audio arrives faster than real time) | `stop()` every scheduled `AudioBufferSourceNode` on `interrupted`; drop chunks still decoding |
+| Replies switch to the wrong language after a barge-in | Prompt rule "switch to the customer's language" + a misheard overlapping fragment | `RESPOND IN {LANG}. YOU MUST RESPOND UNMISTAKABLY IN {LANG}.`; switch only on an explicit request; stop playback on `interrupted` |
+| Waiting filler sounds unnatural (English phrase in a VI/JA call) | Example filler in the prompt gets parroted | Admin-configured filler per language; none → stay silent |
 | Mid-session text ignored on 3.1 | Used `sendClientContent` | `sendRealtimeInput({ text })` (the documented text path on 3.x) |
 | Voice sample button slow / times out | TTS on demand | Pre-generate at startup, cache on S3, key by version |
 

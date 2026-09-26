@@ -6,7 +6,7 @@ ephemeral token; tools are still executed by the backend.
 ```
 FE  POST /api/live/token?lang=   → BE: validate agent → client.auth_tokens.create() → {token, model, voice_name, session_id}
 FE  ai.live.connect({model, config, callbacks})   (apiKey = token, apiVersion v1alpha)
-FE  mic PCM 16 kHz, 20–100 ms chunks → sendRealtimeInput({ audio })
+FE  mic PCM 16 kHz, 20–40 ms chunks → sendRealtimeInput({ audio })
 BE→FE audio PCM 24 kHz in serverContent.modelTurn.parts[].inlineData
 FE  toolCall → POST /api/tools/execute → sendToolResponse({ functionResponses })
 ```
@@ -121,13 +121,31 @@ const session = await Promise.race([
 
 | Direction | Format | API |
 |---|---|---|
-| Mic → model | PCM 16-bit mono, **16 kHz**, **20–100 ms chunks** | `sendRealtimeInput({ audio: pcmBlob })` |
+| Mic → model | PCM 16-bit mono, **16 kHz**, **20–40 ms chunks** (≤ 100 ms) | `sendRealtimeInput({ audio: pcmBlob })` |
 | Model → speaker | PCM 16-bit mono, **24 kHz** | `serverContent.modelTurn.parts[].inlineData.data` |
 
-- `ScriptProcessor` buffer 1024 @ 16 kHz = 64 ms per chunk; 4096 = 256 ms held back per send.
+- `ScriptProcessor` buffer 512 @ 16 kHz = 32 ms per chunk; 4096 = 256 ms held back per send.
 - Schedule output buffers back-to-back on the AudioContext clock (`nextStartTime`), don't play
   each chunk immediately.
-- `serverContent.interrupted` (barge-in) → reset `nextStartTime` and clear speaking state.
+- `serverContent.interrupted` (barge-in) → **stop every scheduled buffer**, not just future ones.
+  The model streams faster than real time, so resetting `nextStartTime` alone leaves seconds of
+  queued speech talking over the customer; it leaks into the mic and garbles recognition,
+  language included (Google: "discard your client-side audio buffer"):
+
+  ```ts
+  const scheduled = new Set<AudioBufferSourceNode>()
+  let epoch = 0
+  // per audio part
+  const e = epoch
+  const buf = await decodeAudioData(data, ctx, 24000)
+  if (e !== epoch) continue                        // interrupted while decoding
+  const src = ctx.createBufferSource(); src.buffer = buf; src.connect(out)
+  src.onended = () => scheduled.delete(src); scheduled.add(src)
+  src.start(nextStartTime); nextStartTime += buf.duration
+  // on msg.serverContent.interrupted
+  epoch++; scheduled.forEach(s => { try { s.stop() } catch {} }); scheduled.clear()
+  nextStartTime = ctx.currentTime
+  ```
 - Route output through an `AnalyserNode` if the UI animates on loudness.
 - Transcripts: `serverContent.inputTranscription.text` / `outputTranscription.text` arrive as
   deltas; append to the current turn's bubble, reset indexes on `turnComplete`.
@@ -156,10 +174,15 @@ if (msg.toolCall) {
   result once idle — `FunctionResponse.scheduling` defaults to `WHEN_IDLE`; set it only to change
   that (`INTERRUPT` cuts in, `SILENT` just adds context). 3.8 downgrades `INTERRUPT` to
   `WHEN_IDLE` while the user is speaking.
-- Async tools need prompt rules in the voice block: *"While a search runs you may say ONE short
-  filler, but never answer the question before the results arrive."* and *"If a search finds
-  nothing, say so instead of searching again with a rephrased query. Never run more than two
-  searches in a row without speaking to the customer."*
+- Async tools need prompt rules in the voice block: never answer the question before the
+  results arrive, and *"If a search finds nothing, say so instead of searching again with a
+  rephrased query. Never run more than two searches in a row without speaking to the customer."*
+- The waiting phrase is **admin config per language**, like the greeting (`voice_filler` +
+  `locales[lang].voice_filler`). List every configured phrase in the voice block (*"say ONE
+  short filler, word for word, for the language you are speaking — Vietnamese: "…"; Japanese:
+  "…""*); nothing configured → *"stay silent until the results arrive"*. Never put an example
+  phrase in the prompt: an English "Let me check that for you" gets parroted and sounds
+  unnatural in Vietnamese/Japanese.
 - Tool results are structured (`status`, `retryable`, `guidance`) — see `SKILL.md` §5.
 - Keep the voice tool path fast (retrieve-only RAG profile, no LLM rerank) — even with async
   tools the answer can't start before the result arrives.
@@ -185,6 +208,11 @@ end_conversation in that same turn."*
 
 - Widget passes `?lang=` → token endpoint → appended `## Voice Mode` block in the system
   prompt: default language, greeting rule, control-turn rule, tool-wait rule, farewell rule.
+- Reply language: with `?lang=`, use Google's recommended line `RESPOND IN {LANG}. YOU MUST
+  RESPOND UNMISTAKABLY IN {LANG}.` and allow a switch only on an explicit request or several
+  clear sentences. A "switch to the customer's language" rule flips languages whenever speech
+  overlapping a barge-in is misheard. Native-audio models take no language code — the prompt
+  is the only lever.
 - The FE's first turn is a control message `[Session start] … Greet them now in {lang}` — **not**
   the greeting text. Sending the greeting as a user turn made the model mirror its language.
   Send it with `sendRealtimeInput({ text })` on 3.x; only 2.5 needs `sendClientContent`.

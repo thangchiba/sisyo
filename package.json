@@ -1,6 +1,6 @@
 {
   "name": "sisyo",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Smart documentation system for vibe coding with Claude Code. Token-efficient MAP.md routing.",
   "bin": {
     "sisyo": "./bin/sisyo.js"
