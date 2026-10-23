@@ -2,7 +2,7 @@
 name: hindsight
 description: >
   Add long-term memory to a project with the shared Hindsight server on the LAN
-  Mac (vectorize-io/hindsight), or operate or redeploy that server. Use when a
+  (vectorize-io/hindsight), or operate or redeploy that server. Use when a
   project, app, agent system or coding setup should remember facts, decisions or
   user preferences across sessions; when asked to "integrate Hindsight",
   "add memory", "retain/recall/reflect"; or when the Hindsight stack in
@@ -11,12 +11,15 @@ description: >
 
 # Hindsight: long-term memory for any project
 
-One Hindsight server runs on the always-on Mac and serves every project. A
+One Hindsight server runs on an always-on LAN host and serves every project. A
 **bank** holds one project's memories, and banks never see each other. Integrating a new
 project means: pick a bank, decide what to retain, recall at the point of use.
 Do not stand up a second server unless the project must run somewhere else.
 
 Server details and the reasons behind its setup: `~/Workspace/LanServer/Hindsight/README.md`.
+`<hindsight-host>` below stands for that host's LAN address. This package is public,
+so the address is not written here: take it from the server README or the
+project's own `SISYO.md`.
 Paperclip's integration (capture plugin + per-run recall): the "Company memory
 (Hindsight)" section of `~/Workspace/Hoang/paperclip/DEPLOY-DORAEMON.md`.
 
@@ -24,8 +27,8 @@ Paperclip's integration (capture plugin + per-run recall): the "Company memory
 
 | | |
 |---|---|
-| API (and MCP) | `http://192.168.1.95:26352` from the LAN; `http://host.docker.internal:26352` from a container on the Mac |
-| UI | `http://192.168.1.95:26353` (browse, edit, invalidate memories) |
+| API (and MCP) | `http://<hindsight-host>:26352` from the LAN; `http://host.docker.internal:26352` from a container on the host |
+| UI | `http://<hindsight-host>:26353` (browse, edit, invalidate memories) |
 | Auth | `Authorization: Bearer <HINDSIGHT_API_KEY>`; UI key `HINDSIGHT_UI_ACCESS_KEY` |
 | Keys | in `~/Workspace/LanServer/Hindsight/.env` (mode 600) |
 | LLM | Claude Sonnet 5.5 on the Claude **subscription** (`claude-code`), ChatGPT subscription (`openai-codex`) as fallback |
@@ -104,11 +107,11 @@ Client code for TypeScript and Python, and the exact endpoints, are in
 
 ## Coding agents (Claude Code, Codex)
 
-Use MCP: `claude mcp add --transport http hindsight http://192.168.1.95:26352/mcp/<bank>/ --header "Authorization: Bearer <key>"`,
+Use MCP: `claude mcp add --transport http hindsight http://<hindsight-host>:26352/mcp/<bank>/ --header "Authorization: Bearer <key>"`,
 with one bank per repo (`coding-agent::<repo>`).
 
-**Do not install Hindsight hooks globally** (`~/.claude/settings.json`) on the Mac
-or in WSL. Paperclip agents on those machines share `~/.claude`, so they would
+**Do not install Hindsight hooks globally** (`~/.claude/settings.json`) on the
+server or in WSL. Paperclip agents on those machines share `~/.claude`, so they would
 get the hooks too: a second injection of memory, and agent transcripts retained
 into the bank. Use MCP, or project-level hooks (`.claude/settings.json` in the
 repo).
@@ -136,15 +139,15 @@ Health signals:
 
 ## Deploying a separate instance
 
-Only when a project must run away from this Mac. Copy the directory (compose
+Only when a project must run away from this host. Copy the directory (compose
 file, `Dockerfile`, `login-*.sh`, README); do not copy `.env`, `codex-home/` or
 `backups/`. Then:
 
 1. **New secrets.** Create a new `.env` with fresh `HINDSIGHT_DB_PASSWORD`,
    `HINDSIGHT_API_KEY` and `HINDSIGHT_UI_ACCESS_KEY` (`openssl rand -hex 24`),
    plus the Gemini and Jev keys.
-2. **A free subnet.** Pin `networks.default` to a free 10.x subnet. On this Mac,
-   an automatic pick lands on 192.168.0.0/20 and cuts containers off from the LAN.
+2. **A free subnet.** Pin `networks.default` to a free 10.x subnet. On the Mac it
+   first ran on, an automatic pick lands on 192.168.0.0/20 and cuts containers off from the LAN.
 3. **Build for the host's own architecture.** The Dockerfile copies the native
    Claude CLI binary for that platform.
 4. **Log in** with `login-claude.sh`, then `login-codex.sh`.
