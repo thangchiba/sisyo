@@ -35,6 +35,8 @@ chat = client.chats.create(
 ## Stream a message
 
 ```python
+from starlette.concurrency import iterate_in_threadpool
+
 def _safe_get_text(chunk) -> str:
     try:
         return chunk.text or ""        # raises / empty on function-call-only chunks
@@ -60,7 +62,7 @@ async def stream_chat_message(session_id: str, message: str):
     stream = chat.send_message_stream(message)
     pending_calls = None
     full = []
-    for chunk in stream:
+    async for chunk in iterate_in_threadpool(stream):   # NOT `for chunk in stream` — see below
         text = _safe_get_text(chunk)
         if text:
             full.append(text)
@@ -75,6 +77,14 @@ async def stream_chat_message(session_id: str, message: str):
         yield {"event": "function_calls", "data": json.dumps({"calls": pending_calls})}
     yield {"event": "done", "data": "{}"}
 ```
+
+**Pull the sync stream off the event loop.** `chat.send_message_stream()` on the sync client is a
+*blocking* iterator. A bare `for chunk in stream` inside the async SSE generator stalls the event
+loop while it waits for each chunk, so uvicorn (uvloop on Linux, Proactor on Windows) only flushes
+the queued writes when the turn ends: every `text` event reaches the browser in the same
+millisecond as `done` and the reply "pops in" whole. `iterate_in_threadpool` waits for each chunk
+on a worker thread (or use the async client, `client.aio.chats`). Check it: `text` events should
+arrive ~100–200 ms apart (sirisugi 2026-09-28: first words 1.3 s instead of the full reply at 2.2–3.4 s).
 
 ## Return tool results — ONE call, all responses
 

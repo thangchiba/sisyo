@@ -37,21 +37,48 @@
  ],
  ".claude/skills/gemini-integration/SKILL.md": [
   "345d6aba2a3c9f0dcf62c8e4b3a11cae531637b34d0b934df206e40876f0d2b1",
+  "79829b4fb5c7afa7ce819d51087d69251d7552f91d183c2068b692eb53dd53e7",
   "c24075202b5154a9c1821034af8cc3da8dd895ae0fba0d908f35fe2a11070532",
   "f5c298b3013004125b458db7c9f5971cc047e9d57c02992edc3faed7c7b3f21f"
  ],
  ".claude/skills/gemini-integration/TEXT-CHAT.md": [
-  "165c30a0e85f9dcbb9889b1d20dc5ebd54082b05a07d646699dada3c80b72417"
+  "165c30a0e85f9dcbb9889b1d20dc5ebd54082b05a07d646699dada3c80b72417",
+  "8c97bcfdf6161d2f8deb46d8105b417cdc6c14acab64779c6740d38e804a5097"
  ],
  ".claude/skills/gemini-integration/TROUBLESHOOTING.md": [
   "3659f0d83782da3ab55921d5bdce5222d531031b4bcb51f68db6dc80b6d120eb",
   "36d519a3754a81862b3c1c080c8fcf16635820d3f7ef3f09625fc1a7195d7266",
   "8e24e24ee5915908c204c42b094c82727bac7fb4214d54a7b30cb129ad781a6e",
+  "e19f4742a1cdaf77d1e99a7747fd6d952a37a9183e1aae77997919eefcb8dd4f",
   "f8f77b65bbe86dc89408b8372685acf59774df93e4fd23f3563df0f55be07b8c"
+ ],
+ ".claude/skills/hindsight/SKILL.md": [
+  "cd564d9f4227571ba0f366f9b816d49a70bb9ac2cff449a475f695324e83f4fa"
  ],
  ".claude/skills/html-docs/SKILL.md": [
   "8414e0166d4403fff509302f2973a8765441529584d710249eb1bf887e89caf2",
   "a307853ca9bad1e0335cea6c477400048e2d17fcecaedd79b5b58b481666cbdf"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/COMPONENTS.md": [
+  "126d0dcc74c3adabf466cfd0565a3efad1a1cd5dcf98f7a8181d1af7b2d5d708"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/GAMIFICATION.md": [
+  "cd56f2beda30754e51f6ae086b9ec9882f0abedd7210b78f359362d5317a2bad"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/ICONS.md": [
+  "f165ee9958868ca9603ecc4fa6d38bd623e28493b85e09871c4ee5abd8bf0893"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/LAYOUT-NAV.md": [
+  "3082dbd04e60f424c8604ea3308df38ceb38a5777a4a2fdcd0c6452082132866"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/MOTION-A11Y.md": [
+  "5adfe78b50420a5f8c0c093d5a067817332bcc14b5e3e6a120dd18d2a7e46475"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/SKILL.md": [
+  "e65be76bb1bd53c80acf5374a8fdc00bd08bf4222cfb9aff15caed771fe6bbf5"
+ ],
+ ".claude/skills/neon-game-ui-ux-skill/TOKENS.md": [
+  "9d4a0363160d7260f930f0b98f7a80163f2f309de24a375abb33a755aafb0741"
  ],
  ".claude/skills/react-page-oriented/SKILL.md": [
   "dd57426f6be595b65b263b754e2c8c9cabce9e3ce332e80cbb1ddcebfab89e81"
@@ -62,6 +89,9 @@
  ".claude/skills/terraform-best-practices/SKILL.md": [
   "4cd2cbf59c8d8755bf1b1c0f12553feb1ca7258ce44e5e91cf6baee3f0e23149",
   "85eee170ef76a0d17ed7f44037cf4421eb879b74dce4fd452066f59c275d9616"
+ ],
+ ".claude/skills/typesafe-jev/SKILL.md": [
+  "db5d6f3416ef9468f00dc2b55bd2a76d7ac6f6514ffc22eb27455f7b007d7241"
  ],
  ".claude/skills/vibe-docs/SKILL.md": [
   "5bf3ef21df2315575479a610a15f935010673e74de3523c888e74a6c3f78b105",

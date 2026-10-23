@@ -109,6 +109,9 @@ Apply to every `generate_content` / `chats.create` / `embed_content` on 3.5+ / 3
 - Send **all** function responses of a turn in **ONE** `send_message_stream(parts)`. One call per
   response only streams the reply to the last one and silently drops the rest.
 - A chunk may contain only function calls and no text — wrap `chunk.text` in a safe getter.
+- The sync client's `send_message_stream` is a **blocking** iterator: inside an async SSE generator
+  pull it with `starlette.concurrency.iterate_in_threadpool` (or use `client.aio`), never a bare
+  `for` — the event loop stalls and the whole reply reaches the browser at once.
 - JSON output: `response_mime_type="application/json"` + still parse defensively (regex the
   first `{...}` on failure).
 
