@@ -53,6 +53,7 @@
   "f8f77b65bbe86dc89408b8372685acf59774df93e4fd23f3563df0f55be07b8c"
  ],
  ".claude/skills/hindsight/SKILL.md": [
+  "39c9cbdd75071e5a29a89b60f3aa5ce79c4450c91d4672b729593e37e86a21d2",
   "cd564d9f4227571ba0f366f9b816d49a70bb9ac2cff449a475f695324e83f4fa"
  ],
  ".claude/skills/html-docs/SKILL.md": [
@@ -60,25 +61,25 @@
   "a307853ca9bad1e0335cea6c477400048e2d17fcecaedd79b5b58b481666cbdf"
  ],
  ".claude/skills/neon-game-ui-ux-skill/COMPONENTS.md": [
-  "126d0dcc74c3adabf466cfd0565a3efad1a1cd5dcf98f7a8181d1af7b2d5d708"
+  "d9dd9fb57e0044988628bab166b48f797c7445bef90f72f5d9fd99c21720090c"
  ],
  ".claude/skills/neon-game-ui-ux-skill/GAMIFICATION.md": [
-  "cd56f2beda30754e51f6ae086b9ec9882f0abedd7210b78f359362d5317a2bad"
+  "e3f9728439850cba21c6fd1e971597978583d939a47a2979224a1aa37ba70a23"
  ],
  ".claude/skills/neon-game-ui-ux-skill/ICONS.md": [
-  "f165ee9958868ca9603ecc4fa6d38bd623e28493b85e09871c4ee5abd8bf0893"
+  "788cbe84e5f2d16553cf96e3c76c2210d1e92a67a21d460dab50fb984c65558c"
  ],
  ".claude/skills/neon-game-ui-ux-skill/LAYOUT-NAV.md": [
-  "3082dbd04e60f424c8604ea3308df38ceb38a5777a4a2fdcd0c6452082132866"
+  "44b2a92ada28d4cc957da6d7eceba66c7377c1671fc5bdfa8c9c7c6f97c3490a"
  ],
  ".claude/skills/neon-game-ui-ux-skill/MOTION-A11Y.md": [
-  "5adfe78b50420a5f8c0c093d5a067817332bcc14b5e3e6a120dd18d2a7e46475"
+  "183ae3b847047a2caffac0a2e01007c471e58a5f58e1f885e690cce77ed5ab45"
  ],
  ".claude/skills/neon-game-ui-ux-skill/SKILL.md": [
-  "e65be76bb1bd53c80acf5374a8fdc00bd08bf4222cfb9aff15caed771fe6bbf5"
+  "540b9db2c3fa60155f465fe906e582bef5180f6903dfcee2ee1261e12ffb2431"
  ],
  ".claude/skills/neon-game-ui-ux-skill/TOKENS.md": [
-  "9d4a0363160d7260f930f0b98f7a80163f2f309de24a375abb33a755aafb0741"
+  "b520a789a1466b86a6a14c666951f3b3eb6bc992414f76223ac9b19d284d85cf"
  ],
  ".claude/skills/react-page-oriented/SKILL.md": [
   "dd57426f6be595b65b263b754e2c8c9cabce9e3ce332e80cbb1ddcebfab89e81"
