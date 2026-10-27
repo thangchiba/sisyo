@@ -19,6 +19,7 @@ defaults and deploy does not rewrite it. Verify via the token / health endpoint 
 | Symptom | Cause | Fix |
 |---|---|---|
 | Reply ignores earlier tool results | One `send_message_stream` per response | Send all responses as ONE `parts` list |
+| Reply appears all at once — every SSE `text` event arrives together with `done` | Sync `send_message_stream` iterated with `for` inside the async SSE generator blocks the event loop; uvicorn flushes the queued writes only when the turn ends | `async for chunk in iterate_in_threadpool(stream)` (or `client.aio` chats) — see `TEXT-CHAT.md` |
 | `chunk.text` raises / empty | Chunk carries only function calls | `_safe_get_text()` wrapper |
 | Chat got slower after bump | `medium` (3.7/3.8 default), `low` pinned on 3.5 Flash-Lite (its default is `minimal`), or generate model on the chat path | `minimal` on 3.5 Flash-Lite; chat/rerank on flash-lite |
 | LLM rerank takes seconds | Output JSON echoes a long chunk id per candidate | Number candidates `[0]…[n-1]`, map back by index (see `RAG-EMBEDDING.md`) |

@@ -145,6 +145,8 @@ Optional best-practice guides that Claude loads on demand:
 | `fastapi-best-practices` | FastAPI backends, REST APIs, Python web services |
 | `react-page-oriented` | React/Next.js pages, component structure |
 | `gemini-integration` | Google Gemini API: model roles via config keys, 3.x request rules, streaming chat + tools, Live voice (ephemeral token, gemini-3.8-live async tools / 3.1 sync), structured tool results, embeddings/rerank, JSON mode, grounding, PDF, TTS, troubleshooting |
+| `hindsight` | Long-term memory from a shared Hindsight server on your LAN: banks, retain/recall/reflect, MCP for coding agents, operating the server. Addresses are written as `<hindsight-host>`; use your own server's |
+| `neon-game-ui-ux-skill` | Neon, game-like UI/UX design system (React + Tailwind + motion), guidance only: tokens, component anatomy, HUD (level, XP, streak, daily goal), bottom bar with a centre progress dial + radial menu, gamification patterns (XP, quests, daily path, rewards), duotone icons on an open-source base, motion and accessibility rules |
 
 ## After install
 
