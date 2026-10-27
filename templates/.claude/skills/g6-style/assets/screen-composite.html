@@ -1,0 +1,96 @@
+<!doctype html>
+<!--
+  Composites a real screen capture into a photo's blank phone screen (scripts/fit-screen.cjs gives MATRIX).
+  Copy next to the two images, replace the placeholders, then render at the photo's size:
+
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --hide-scrollbars \
+      --force-device-scale-factor=1 --window-size=PHOTO_W,PHOTO_H --screenshot=out.png "file://$PWD/composite.html"
+
+  PHOTO / SCREEN: file names; PHOTO_W / PHOTO_H: the photo's size; CAPTURE_W / CAPTURE_H: the capture's size
+  (the one fit-screen.cjs was given); RADIUS: the screen's corner radius in capture pixels (~12 % of its width);
+  GLOW_X / GLOW_Y: where the light sits (e.g. a card touching the phone), or delete .glow.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: PHOTO_Wpx;
+        height: PHOTO_Hpx;
+        overflow: hidden;
+        background: #000;
+      }
+      .photo {
+        position: absolute;
+        inset: 0;
+        width: PHOTO_Wpx;
+        height: PHOTO_Hpx;
+        display: block;
+      }
+      /* A soft warm light where the card meets the phone (blend: screen). */
+      .glow {
+        position: absolute;
+        left: calc(GLOW_Xpx - 150px);
+        top: calc(GLOW_Ypx - 150px);
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 226, 160, 0.95) 0%, rgba(242, 199, 110, 0.55) 26%, rgba(184, 134, 44, 0.18) 52%, rgba(184, 134, 44, 0) 70%);
+        mix-blend-mode: screen;
+        opacity: 0.55;
+      }
+      .quad {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: CAPTURE_Wpx;
+        height: CAPTURE_Hpx;
+        overflow: hidden;
+        border-radius: RADIUSpx;
+        background: #fff;
+        transform-origin: 0 0;
+        transform: matrix3d(MATRIX);
+      }
+      .quad img {
+        position: absolute;
+        inset: 0;
+        width: CAPTURE_Wpx;
+        height: CAPTURE_Hpx;
+        display: block;
+      }
+      /* The room's light on the glass: a faint warm wash and a soft diagonal sheen, so the screen sits in the photo. */
+      .warm {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(160deg, rgba(255, 236, 200, 0.1), rgba(255, 214, 150, 0.06) 55%, rgba(60, 40, 10, 0.08));
+      }
+      .sheen {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.16) 42%, transparent 54%);
+      }
+      /* A dynamic island over the capture's top (delete when the capture has its own status bar). */
+      .island {
+        position: absolute;
+        left: calc(50% - 105px);
+        top: 34px;
+        width: 210px;
+        height: 62px;
+        border-radius: 31px;
+        background: #0b0906;
+      }
+    </style>
+  </head>
+  <body>
+    <img class="photo" src="PHOTO" alt="" />
+    <div class="glow"></div>
+    <div class="quad">
+      <img src="SCREEN" alt="" />
+      <div class="warm"></div>
+      <div class="sheen"></div>
+      <span class="island"></span>
+    </div>
+  </body>
+</html>

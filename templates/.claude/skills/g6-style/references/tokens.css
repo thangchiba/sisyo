@@ -1,0 +1,832 @@
+/*
+ * g6-style tokens + motion for Tailwind CSS v4 (paste into the app's global CSS after `@import "tailwindcss";`).
+ *
+ * The look: champagne / metallic gold "light LED" on warm ivory (light) and on warm black (dark), after the lit
+ * atrium of a Ginza department store. Light is the default; dark follows the device unless the page sets
+ * data-theme. Four accent tones, one meaning each:
+ *   gold      primary action, selected, done        (the CTA key, success ticks)
+ *   champagne links, sharing, keyboard focus
+ *   bronze    profile / identity
+ *   rose      rare highlight
+ * Fills and glows use the tone itself (same in both themes); coloured TEXT and thin lines use the `ink-*` stop,
+ * which is deep gold on ivory (5.2–6.3:1) and the light itself on black.
+ *
+ * The reference components (references/components/*.tsx, from the Hokidon site) still use that project's tone
+ * names: lime = gold, aqua = champagne, iris = bronze, flare = rose. The alias block at the end maps them, so the
+ * components work as they are; new code should use the plain names.
+ */
+
+/* --- Light (default) and forced-light subtrees ------------------------------------------------------------- */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --c-void: #f7f3ec; /* page */
+  --c-base: #fbf8f2;
+  --c-surface: #fffdf8; /* cards */
+  --c-raised: #f4eee4; /* wells, hover */
+  --c-shade: #ebe3d5; /* tracks */
+  --c-line: #e6dccb;
+  --c-line-strong: #d2c4a8;
+  --c-field: #fffdf8;
+
+  --c-title: #1c1710;
+  --c-body: #3b3327;
+  --c-soft: #5b5142;
+  --c-muted: #6e6352; /* floor for readable text */
+  --c-faint: #b6aa95; /* decoration / disabled only */
+
+  --c-primary: #1c1710; /* strong neutral: selected tab, filled number */
+  --c-primary-hover: #3a3125;
+  --c-on-primary: #fffaf0;
+
+  /* Ink stops: coloured text and thin lines, readable on ivory. */
+  --c-gold-ink: #8a6211;
+  --c-champagne-ink: #6e5526;
+  --c-bronze-ink: #97502d;
+  --c-rose-ink: #a3413a;
+  --c-amber-ink: #965400;
+  --c-coral-ink: #cc1a40;
+  /* The bright band of metallic gold text (large text only, 3.2:1). */
+  --c-sheen-ink: #b8862c;
+
+  --c-shadow-edge: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 1px 2px rgb(60 42 12 / 0.06), 0 12px 32px rgb(60 42 12 / 0.08);
+  --c-shadow-float: 0 1px 2px rgb(60 42 12 / 0.06), 0 18px 48px rgb(60 42 12 / 0.14);
+  --c-keycap-depth: #dccfb5; /* a light key sits on a sand base */
+  --c-scrim: rgb(28 23 16 / 0.45);
+
+  /* Page backdrop: gold glow from the top + a triangle lattice of light that fades downwards (.g6-backdrop). */
+  --c-backdrop:
+    radial-gradient(ellipse 80% 55% at 50% -8%, rgb(242 199 110 / 0.2), transparent 70%),
+    radial-gradient(600px 380px at 92% 6%, rgb(236 214 166 / 0.22), transparent 70%),
+    radial-gradient(520px 360px at 4% 30%, rgb(226 164 124 / 0.08), transparent 70%);
+  --c-lattice: rgb(184 134 44 / 0.16);
+  /* Warm light falling from the top of a hero (bg-(image:--c-skylight)). */
+  --c-skylight: radial-gradient(55% 60% at 50% 0%, rgb(255 236 190 / 0.45), rgb(242 199 110 / 0.12) 45%, transparent 75%);
+  /*
+   * Lines of light that travel (e.g. several tiles meeting at one card). On ivory the moving light must be DEEP
+   * gold with a glow: the pale cream that looks like an LED on black disappears completely on the light page.
+   */
+  --c-way-line: rgb(184 134 44 / 0.6);
+  --c-way-light: #b07a1c;
+  --c-way-glow: rgb(184 134 44 / 0.7);
+}
+
+/* --- Dark: the device decides; [data-theme='light'] opts out, [data-theme='dark'] forces --------------------- */
+@custom-variant theme-dark {
+  @media (prefers-color-scheme: dark) {
+    &:not([data-theme='light']) {
+      @slot;
+    }
+  }
+  &[data-theme='dark'],
+  & [data-theme='dark'] {
+    @slot;
+  }
+}
+
+/*
+ * Use `theme-dark` only inside :root like this. On an element (class="theme-dark:…") it does not follow a theme
+ * picked with a button (data-theme on <html>): put per-theme values in --c-* variables instead and read them.
+ */
+:root {
+  @variant theme-dark {
+    color-scheme: dark;
+
+    --c-void: #0b0906;
+    --c-base: #100d09;
+    --c-surface: #17130d;
+    --c-raised: #1e1912;
+    --c-shade: #272017;
+    --c-line: #31291d;
+    --c-line-strong: #463a28;
+    --c-field: #1e1912;
+
+    --c-title: #fbf3e2;
+    --c-body: #e3d8c3;
+    --c-soft: #bfb197;
+    --c-muted: #9c8f76;
+    --c-faint: #5a4f3c;
+
+    --c-primary: #f6ecd6;
+    --c-primary-hover: #e3d8c3;
+    --c-on-primary: #1c1710;
+
+    /* On black every ink stop is the light itself. */
+    --c-gold-ink: #f6d58e;
+    --c-champagne-ink: #efdcb2;
+    --c-bronze-ink: #f0b994;
+    --c-rose-ink: #f6c2b4;
+    --c-amber-ink: #ffb23e;
+    --c-coral-ink: #ff5c7a;
+    --c-sheen-ink: #fff1c9;
+
+    --c-shadow-edge: inset 0 1px 0 rgb(255 240 210 / 0.06), 0 24px 60px rgb(0 0 0 / 0.4);
+    --c-shadow-float: inset 0 1px 0 rgb(255 240 210 / 0.07), 0 24px 60px rgb(0 0 0 / 0.6);
+    --c-keycap-depth: rgb(0 0 0 / 0.5);
+    --c-scrim: rgb(11 9 6 / 0.72);
+
+    --c-backdrop:
+      radial-gradient(ellipse 80% 55% at 50% -8%, rgb(242 199 110 / 0.14), transparent 70%),
+      radial-gradient(600px 380px at 92% 12%, rgb(236 214 166 / 0.08), transparent 70%),
+      radial-gradient(520px 360px at 6% 88%, rgb(226 164 124 / 0.07), transparent 70%);
+    --c-lattice: rgb(242 199 110 / 0.13);
+    --c-skylight: radial-gradient(55% 60% at 50% 0%, rgb(242 199 110 / 0.24), rgb(242 199 110 / 0.06) 45%, transparent 75%);
+    --c-way-line: rgb(242 199 110 / 0.45);
+    --c-way-light: #fff3d1;
+    --c-way-glow: rgb(242 199 110 / 0.9);
+  }
+}
+
+/* --- Tailwind colours (inline: a utility reads the variable where it is used, so a data-theme subtree re-themes) --- */
+@theme inline {
+  --color-surface-void: var(--c-void);
+  --color-surface-base: var(--c-base);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-raised);
+  --color-surface-3: var(--c-shade);
+  --color-field: var(--c-field);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-ink-title: var(--c-title);
+  --color-ink-body: var(--c-body);
+  --color-ink-soft: var(--c-soft);
+  --color-muted: var(--c-muted);
+  --color-faint: var(--c-faint);
+  --color-primary: var(--c-primary);
+  --color-on-primary: var(--c-on-primary);
+
+  /* Tone fills, rings and glows: the same in both themes. */
+  --color-gold: #f2c76e;
+  --color-champagne: #ecd6a6;
+  --color-bronze: #e2a47c;
+  --color-rose: #f2b8a8;
+  --color-on-gold: #1a1307; /* text on any gold fill; white on gold fails */
+
+  /* Tone inks: coloured text and lines. */
+  --color-ink-gold: var(--c-gold-ink);
+  --color-ink-champagne: var(--c-champagne-ink);
+  --color-ink-bronze: var(--c-bronze-ink);
+  --color-ink-rose: var(--c-rose-ink);
+  --color-ink-amber: var(--c-amber-ink);
+  --color-ink-coral: var(--c-coral-ink);
+
+  /* The nearest .tone-* scope: bg-tone/12, ring-tone/40, text-tone-ink. */
+  --color-tone: var(--tone, #f2c76e);
+  --color-tone-ink: var(--tone-ink, var(--c-gold-ink));
+
+  --shadow-edge: var(--c-shadow-edge);
+  --shadow-float: var(--c-shadow-float);
+}
+
+@theme {
+  --radius-control: 1rem;
+  --radius-card: 1.5rem;
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
+  /* Glow = signal: the selected, current or primary thing only. */
+  --shadow-glow-sm: 0 0 10px rgb(242 199 110 / 0.25);
+  --shadow-glow: 0 0 18px rgb(242 199 110 / 0.4);
+
+  --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Entrance on first paint (CSS, so it never waits for JavaScript) and slow ambient loops. */
+  --animate-rise: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-flow: flow 5s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  --animate-glow-pulse: glow-pulse 2.4s ease-in-out infinite;
+  --animate-pop-in: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-aurora: aurora 16s ease-in-out infinite alternate;
+  --animate-drift: drift 6s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-tap: tap 5s ease-out infinite;
+  --animate-toast: toast 5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  --animate-scan: scan 2.6s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes flow {
+    0%,
+    100% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+  }
+  @keyframes shimmer {
+    from {
+      transform: translateX(-120%);
+    }
+    to {
+      transform: translateX(260%);
+    }
+  }
+  @keyframes glow-pulse {
+    0%,
+    100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes aurora {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(5%, -4%, 0) scale(1.08);
+    }
+    100% {
+      transform: translate3d(-4%, 5%, 0) scale(0.95);
+    }
+  }
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  /* A finger tap: a ring that grows and fades, once per 5 s loop (in step with toast). */
+  @keyframes tap {
+    0%,
+    28% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    32% {
+      opacity: 0.85;
+      transform: scale(0.6);
+    }
+    48%,
+    100% {
+      opacity: 0;
+      transform: scale(1.9);
+    }
+  }
+  @keyframes toast {
+    0%,
+    36% {
+      opacity: 0;
+      transform: translateY(14px) scale(0.92);
+    }
+    44%,
+    86% {
+      opacity: 1;
+      transform: none;
+    }
+    94%,
+    100% {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  /* A scan line; set --scan-travel to the height it runs over. */
+  @keyframes scan {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(var(--scan-travel, 100%));
+    }
+  }
+}
+
+/* --- Surfaces and gradients ---------------------------------------------------------------------------------- */
+/* Metallic gold key: light band, gold, deep gold. With bg-[length:200%_200%] animate-flow the light travels over
+   it like polished metal; only the one hero CTA of a page gets the travelling light. */
+@utility bg-cta {
+  background-image: linear-gradient(150deg, #fff3d1 0%, #f2c76e 38%, #e2b45c 62%, #fff0c4 80%, #d4a24a 100%);
+}
+/* Gold foil with a light band: brand marks, rare highlights on dark surfaces. */
+@utility bg-foil {
+  background-image: linear-gradient(120deg, #f6d58e 0%, #fff4d6 28%, #e2b45c 52%, #fff1c9 74%, #e2a47c 100%);
+}
+/* Metallic gold TEXT that stays readable in both themes: deep gold with a lighter band (+ text-gradient). */
+@utility bg-gold-ink {
+  background-image: linear-gradient(120deg, var(--c-gold-ink) 0%, var(--c-sheen-ink) 34%, var(--c-gold-ink) 58%, var(--c-sheen-ink) 80%, var(--c-bronze-ink) 100%);
+}
+@utility text-gradient {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility bg-sheen {
+  background-image: linear-gradient(118deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+}
+
+@layer base {
+  body {
+    background-color: var(--c-void);
+    color: var(--c-body);
+  }
+  :focus-visible {
+    outline: 2px solid var(--c-champagne-ink);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Fixed page backdrop: gold glows + a triangle lattice of light fading downwards. Render once, static. */
+  .g6-backdrop {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    background: var(--c-backdrop);
+  }
+  .g6-backdrop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, var(--c-lattice) 0 1px, transparent 1px 41.57px),
+      repeating-linear-gradient(60deg, var(--c-lattice) 0 1px, transparent 1px 41.57px),
+      repeating-linear-gradient(120deg, var(--c-lattice) 0 1px, transparent 1px 41.57px);
+    opacity: 0.9;
+    -webkit-mask-image: linear-gradient(#000, transparent 60%);
+    mask-image: linear-gradient(#000, transparent 60%);
+  }
+
+  /* A strip of gold light (an LED band): section edges, around a marquee, eyebrow dashes. Same in both themes. */
+  .led-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(242 199 110 / 0.85) 18%, #fff3d1 50%, rgb(242 199 110 / 0.85) 82%, transparent);
+    box-shadow:
+      0 0 10px rgb(242 199 110 / 0.5),
+      0 0 2px rgb(255 243 209 / 0.8);
+  }
+
+  /* Card: hairline, top highlight, soft depth. */
+  .g6-card {
+    position: relative;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--c-line);
+    background-color: var(--c-surface);
+    box-shadow: var(--c-shadow-edge);
+  }
+  /* A tinted top-right corner in the scope's tone (needs a .tone-* class). */
+  .g6-glow {
+    background-image: radial-gradient(240px 150px at 100% 0%, color-mix(in srgb, var(--tone, #f2c76e) 14%, transparent), transparent 70%);
+  }
+  /* A ring of light turning around the element: the one thing a section points at. One per screen. */
+  .g6-sweep {
+    position: relative;
+    isolation: isolate;
+  }
+  .g6-sweep::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    padding: 3px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: conic-gradient(from var(--g6-angle), #f2c76e, #ecd6a6, #e2a47c, rgb(242 199 110 / 0.15) 70%, #f2c76e);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    animation: g6-spin 6s linear infinite;
+  }
+}
+
+@property --g6-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes g6-spin {
+  to {
+    --g6-angle: 360deg;
+  }
+}
+
+/* Tone scopes: pass a tone to a component without building class names (bg-tone/12, ring-tone/40, text-tone-ink). */
+.tone-gold {
+  --tone: #f2c76e;
+  --tone-ink: var(--c-gold-ink);
+}
+.tone-champagne {
+  --tone: #ecd6a6;
+  --tone-ink: var(--c-champagne-ink);
+}
+.tone-bronze {
+  --tone: #e2a47c;
+  --tone-ink: var(--c-bronze-ink);
+}
+.tone-rose {
+  --tone: #f2b8a8;
+  --tone-ink: var(--c-rose-ink);
+}
+
+/*
+ * --- Story loops (the four-ways tiles) ------------------------------------------------------------------------
+ * Each loops on its own clock. Their STATIC styles are the end state (the card on the phone, the page open, the
+ * pass up): with reduced motion the global rule below runs one 1 ms pass with no fill, so the static style is what
+ * stays on screen. Design every loop that way.
+ */
+/* NFC: the card slides to the back of the phone, rings spread, the notice drops in, the page opens. */
+.nfc-card {
+  transform: rotate(-10deg);
+  animation: nfc-card 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.nfc-ring {
+  opacity: 0;
+  animation: nfc-ring 4.8s ease-out infinite;
+}
+.nfc-banner {
+  animation: nfc-banner 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.nfc-page {
+  animation: nfc-page 4.8s ease-in-out infinite;
+}
+@keyframes nfc-card {
+  0% {
+    opacity: 0;
+    transform: translate(-75%, 35%) rotate(-22deg);
+  }
+  12% {
+    opacity: 1;
+  }
+  32%,
+  72% {
+    opacity: 1;
+    transform: rotate(-10deg);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translate(-75%, 35%) rotate(-22deg);
+  }
+}
+@keyframes nfc-ring {
+  0%,
+  31% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  36% {
+    opacity: 0.9;
+    transform: scale(0.5);
+  }
+  58%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes nfc-banner {
+  0%,
+  36% {
+    opacity: 0;
+    transform: translateY(-140%);
+  }
+  44%,
+  88% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: translateY(-140%);
+  }
+}
+@keyframes nfc-page {
+  0%,
+  52% {
+    opacity: 0;
+  }
+  62%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* Wallet: a finger taps a pass in the stack; it rises over the others and shows its QR. */
+.wallet-pass {
+  animation: wallet-pass 5.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.wallet-qr {
+  animation: wallet-qr 5.2s ease-in-out infinite;
+}
+.wallet-tap {
+  opacity: 0;
+  animation: wallet-tap 5.2s ease-out infinite;
+}
+@keyframes wallet-pass {
+  0%,
+  24% {
+    transform: translateY(var(--stack-y, 58%));
+  }
+  38%,
+  84% {
+    transform: none;
+  }
+  96%,
+  100% {
+    transform: translateY(var(--stack-y, 58%));
+  }
+}
+@keyframes wallet-qr {
+  0%,
+  34% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  44%,
+  84% {
+    opacity: 1;
+    transform: none;
+  }
+  92%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes wallet-tap {
+  0%,
+  12% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  16% {
+    opacity: 0.85;
+    transform: scale(0.6);
+  }
+  30%,
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+/* Lines meeting at one card: dotted gold lines with a light running down each (SVG paths with pathLength="100"). */
+.way-line {
+  fill: none;
+  stroke: var(--c-way-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 1 2.2;
+}
+.way-light {
+  fill: none;
+  stroke: var(--c-way-light);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 14 200;
+  stroke-dashoffset: 14;
+  filter: drop-shadow(0 0 6px var(--c-way-glow));
+  animation: way-light 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes way-light {
+  from {
+    stroke-dashoffset: 14;
+  }
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+/* A value flipping old → new (a title that changed); static = the new one. */
+.swap-out {
+  opacity: 0;
+  animation: swap-out 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.swap-in {
+  animation: swap-in 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@keyframes swap-out {
+  0% {
+    opacity: 0;
+  }
+  6%,
+  38% {
+    opacity: 1;
+    transform: none;
+  }
+  46%,
+  100% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+}
+@keyframes swap-in {
+  0%,
+  38% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  46%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* An edit going live: a bar that fills, then the tick. */
+.fill-bar {
+  animation: fill-bar 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.fill-tick {
+  animation: fill-tick 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+@keyframes fill-bar {
+  0% {
+    transform: scaleX(0);
+  }
+  45%,
+  88% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fill-tick {
+  0%,
+  42% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  52%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* A form field filled by the app (OCR, autofill): the text comes in from a blur, the field glows gold once. */
+.fill-in {
+  animation: fill-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fill-in {
+  0% {
+    color: transparent;
+    text-shadow: 0 0 10px var(--c-gold-ink);
+    background-color: rgb(242 199 110 / 0.16);
+    box-shadow:
+      0 0 0 3px rgb(242 199 110 / 0.55),
+      0 0 22px rgb(242 199 110 / 0.4);
+  }
+  45% {
+    color: transparent;
+    text-shadow: 0 0 3px var(--c-title);
+  }
+  100% {
+    text-shadow: 0 0 0 transparent;
+  }
+}
+
+/* A scan line running down over a photo while it is read (absolute, h-0.5, inside a relative box). */
+.scan-down {
+  top: 0;
+  animation: scan-down 1.4s ease-in-out infinite alternate;
+}
+@keyframes scan-down {
+  from {
+    top: 0;
+  }
+  to {
+    top: calc(100% - 2px);
+  }
+}
+
+/* --- Reduced motion: end states still apply (1 ms, not none); loops stop after one pass. ------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* A staggered entrance has no wait either (only the entrance: a real delay elsewhere may be a fallback timer). */
+  .animate-rise {
+    animation-delay: 0s !important;
+  }
+}
+
+/*
+ * --- Aliases for the reference components (references/components/*.tsx use the Hokidon names) -------------------
+ * Delete this block once the copied components use the plain names above.
+ */
+@theme inline {
+  --color-neon-lime: #f2c76e;
+  --color-neon-aqua: #ecd6a6;
+  --color-neon-iris: #e2a47c;
+  --color-neon-flare: #f2b8a8;
+  --color-neon-coral: #ff5c7a;
+  --color-neon-amber: #ffb23e;
+  --color-on-neon: #1a1307;
+  --color-neon-ink-lime: var(--c-gold-ink);
+  --color-neon-ink-aqua: var(--c-champagne-ink);
+  --color-neon-ink-iris: var(--c-bronze-ink);
+  --color-neon-ink-flare: var(--c-rose-ink);
+  --color-neon-ink-amber: var(--c-amber-ink);
+  --color-ink: var(--c-title);
+  --color-bg: var(--c-base);
+}
+.neon-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--c-line);
+  background-color: var(--c-surface);
+  box-shadow: var(--c-shadow-edge);
+}
+.neon-glow {
+  background-image: radial-gradient(240px 150px at 100% 0%, color-mix(in srgb, var(--tone, #f2c76e) 14%, transparent), transparent 70%);
+}
+.neon-sweep {
+  position: relative;
+  isolation: isolate;
+}
+.neon-sweep::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  padding: 3px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(from var(--g6-angle), #f2c76e, #ecd6a6, #e2a47c, rgb(242 199 110 / 0.15) 70%, #f2c76e);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: g6-spin 6s linear infinite;
+}
+.tone-lime {
+  --tone: #f2c76e;
+  --tone-ink: var(--c-gold-ink);
+}
+.tone-aqua {
+  --tone: #ecd6a6;
+  --tone-ink: var(--c-champagne-ink);
+}
+.tone-iris {
+  --tone: #e2a47c;
+  --tone-ink: var(--c-bronze-ink);
+}
+@utility bg-flare {
+  background-image: linear-gradient(120deg, #f6d58e 0%, #fff4d6 28%, #e2b45c 52%, #fff1c9 74%, #e2a47c 100%);
+}
+@utility bg-flare-ink {
+  background-image: linear-gradient(120deg, var(--c-gold-ink) 0%, var(--c-sheen-ink) 34%, var(--c-gold-ink) 58%, var(--c-sheen-ink) 80%, var(--c-bronze-ink) 100%);
+}
+/* The form example (components/FormFillFromApi.tsx) uses these names. */
+.meishi-fill {
+  animation: fill-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.meishi-scan {
+  top: 0;
+  animation: scan-down 1.4s ease-in-out infinite alternate;
+}
