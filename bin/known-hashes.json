@@ -22,6 +22,72 @@
  ".claude/skills/fastapi-best-practices/SKILL.md": [
   "6d0424f4c7c8782cac6a1ffeed47d7187f92469e6c92fa76a499f275f571dfb9"
  ],
+ ".claude/skills/g6-style/SKILL.md": [
+  "bdc7fa6a6cef0d3661743e9a4b34aadb1c04c6f38a9bfba4102a932a2d83b3ef"
+ ],
+ ".claude/skills/g6-style/assets/screen-composite.html": [
+  "0d9918abf6fe9a921ef5bf357e970fe8ee57b0a39267147ace2ab258cdcf500f"
+ ],
+ ".claude/skills/g6-style/references/components/ClosingCta.tsx": [
+  "0811b214e336c20de4ab3b1b233b2e15b1fd8f4b83b768112bf81b87b632aa1e"
+ ],
+ ".claude/skills/g6-style/references/components/FormFillFromApi.tsx": [
+  "ee5fed2b2f51e6c19ffd1eb7f905f2a3842f3945b6f3cfd88cdef06f5ed82cd2"
+ ],
+ ".claude/skills/g6-style/references/components/FourWays.tsx": [
+  "fb9a181723c5571830de08b049ae435ebed7d53fd7529190acea002a66443346"
+ ],
+ ".claude/skills/g6-style/references/components/Hero.tsx": [
+  "1bb673ddaa707b2b937f30b6a6481815dc30677aad0cec8bd36b7016fb43fc4d"
+ ],
+ ".claude/skills/g6-style/references/components/HeroVisual.tsx": [
+  "c242716bb1968e6704d5503727764539ab520d91d6a6288c84e5c709555003da"
+ ],
+ ".claude/skills/g6-style/references/components/LandingSection.tsx": [
+  "1e83ce446b5f192183ac71f3f60c9b3d7385413ee6661bafc4e47ec1d72f2d62"
+ ],
+ ".claude/skills/g6-style/references/components/Marquee.tsx": [
+  "95373f2154a382e1885381b75a39936027ed6c4536353ade29087cb3467bd159"
+ ],
+ ".claude/skills/g6-style/references/components/PersonalPage.tsx": [
+  "03c26a5121dc6a709d491576315d666e7df51c9643a66e4e99288bc3c504c85f"
+ ],
+ ".claude/skills/g6-style/references/components/Phone.tsx": [
+  "3ed8821fe8447928e1af13b2c761c205ad7f970eefac13c31497ffd8659109db"
+ ],
+ ".claude/skills/g6-style/references/components/PlayGlyph.tsx": [
+  "1be8b1dc9b94a5e7448dda15761ba13d40e8bbbadfa7b445ba636c031aa65fdd"
+ ],
+ ".claude/skills/g6-style/references/components/Pricing.tsx": [
+  "2b863b270adfb7d10693dfab41142bc45b92ec4d56ff791471bf6dc4406f06d1"
+ ],
+ ".claude/skills/g6-style/references/components/Products.tsx": [
+  "0383f23849d84e62d3dbaf8c1964662ef71e12e5fafd86e2396bdcee465f3cb5"
+ ],
+ ".claude/skills/g6-style/references/components/Switch.tsx": [
+  "05f64b8480c04f582b11983e2244a407a38c91750548a76012029ee3ebfd123a"
+ ],
+ ".claude/skills/g6-style/references/components/VideoDialog.tsx": [
+  "ef9a0475292c657b917d744e4d16cac23363f0b494ef1ae84f960c60b4242cc3"
+ ],
+ ".claude/skills/g6-style/references/components/Walkthrough.tsx": [
+  "abb131f97ffd202cc6267734a5e6027843e5cdcdc356a6b388db0c6ce0fa7ce6"
+ ],
+ ".claude/skills/g6-style/references/imagery.md": [
+  "b949ed29649a95335a4327ed7f9c6da5b6b02b5b49d794259a2110a171df8a8f"
+ ],
+ ".claude/skills/g6-style/references/sections.md": [
+  "6197d1357233fa3a4b187b674d1b254121a345a08ab266511d3ea34a1456b9c6"
+ ],
+ ".claude/skills/g6-style/references/tokens.css": [
+  "b05af2d587dab9de8cd2855a5b1a2d81540244ef9991043faeec02a8c227dbc2"
+ ],
+ ".claude/skills/g6-style/scripts/fit-screen.cjs": [
+  "91427e890cd5e654c8c4bfe74df579a3078237a42c3a9ceb6502f230976bc326"
+ ],
+ ".claude/skills/g6-style/scripts/overflow-audit.cjs": [
+  "0682cd806c5758697e50813105c4a1d9297087b907f94aac7c02157f84a68669"
+ ],
  ".claude/skills/gemini-integration/GENERATE.md": [
   "422c523decaec584f7059f8b31e288b358dfde268da427afeeeb265b8a2e8050"
  ],
