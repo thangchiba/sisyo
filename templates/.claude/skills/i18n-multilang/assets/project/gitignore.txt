@@ -1,0 +1,4 @@
+# built packs and upload plans (rebuilt by "pack")
+dist/
+# generated audio: lives on S3 / the CDN, never in git
+voice/_audio/

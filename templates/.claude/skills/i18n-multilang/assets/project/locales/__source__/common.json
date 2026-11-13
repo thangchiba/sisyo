@@ -1,0 +1,10 @@
+{
+  "_about": "Texts shared by every screen. One file per namespace; nested keys; {{name}} placeholders; plural keys end in _one / _other.",
+  "app": {
+    "name": "__PRODUCT__"
+  },
+  "action": {
+    "ok": "OK",
+    "cancel": "Cancel"
+  }
+}

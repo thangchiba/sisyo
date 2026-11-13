@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "product": "__PRODUCT__",
+  "sourceLanguage": "__SOURCE__",
+  "referenceLanguage": "en",
+  "compat": 1,
+  "localesDir": "locales",
+  "layout": "{lang}/{ns}.json",
+  "languages": "default",
+  "exclude": [],
+  "capabilities": [],
+  "bundle": {
+    "languages": "all",
+    "copyTo": []
+  },
+  "dist": "dist",
+  "cdn": {
+    "baseUrl": "",
+    "textPrefix": "i18n",
+    "voicePrefix": "voice"
+  }
+}

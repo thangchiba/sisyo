@@ -1,0 +1,6 @@
+# LF everywhere: these files are read on Windows, on the Mac and by the CDN, and their hashes must not depend on the OS
+* text=auto eol=lf
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.m4a binary

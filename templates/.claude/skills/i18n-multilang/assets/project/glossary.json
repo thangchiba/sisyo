@@ -1,0 +1,6 @@
+{
+  "_about": "Words every translation must respect. keep: names written the same in every language (brands, characters). terms: a fixed translation per language for a product word. forbidden: words that must never appear ('*' = every language).",
+  "keep": [],
+  "terms": {},
+  "forbidden": {}
+}

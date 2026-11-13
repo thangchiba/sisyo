@@ -147,6 +147,7 @@ Optional best-practice guides that Claude loads on demand:
 | `gemini-integration` | Google Gemini API: model roles via config keys, 3.x request rules, streaming chat + tools, Live voice (ephemeral token, gemini-3.8-live async tools / 3.1 sync), structured tool results, embeddings/rerank, JSON mode, grounding, PDF, TTS, troubleshooting |
 | `hindsight` | Long-term memory from a shared Hindsight server on your LAN: banks, retain/recall/reflect, MCP for coding agents, operating the server. Addresses are written as `<hindsight-host>`; use your own server's |
 | `neon-game-ui-ux-skill` | Neon, game-like UI/UX design system (React + Tailwind + motion), guidance only: tokens, component anatomy, HUD (level, XP, streak, daily goal), bottom bar with a centre progress dial + radial menu, gamification patterns (XP, quests, daily path, rewards), duotone icons on an open-source base, motion and accessibility rules |
+| `i18n-multilang` | Multi-language text for games, apps and sites: i18next-format JSON in `i18n/`, a translate → validate → pack loop for 40 default languages, versioned language packs (bundled in the app and/or on a CDN), language picker and default-language rules, Unity and web runtime contracts. Optional voice sets with their own version next to the text version, and numbers written out for TTS in 10 languages. Ships Python 3.8+ tools (`i18n.py`, `voice.py`, `numwords.py`). Private addresses are placeholders (`cdn.<your-domain>`, `<voice-host>`); real ones belong in your `SISYO.md` |
 
 ## After install
 

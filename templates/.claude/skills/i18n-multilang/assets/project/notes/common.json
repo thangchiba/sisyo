@@ -1,0 +1,5 @@
+{
+  "_about": "Context for translators, per key of the namespace: a sentence, or {\"note\": \"…\", \"max\": 12} when the text has a hard length limit.",
+  "app.name": "The product name. Do not translate.",
+  "action.ok": {"note": "Button that confirms a dialog.", "max": 10}
+}
