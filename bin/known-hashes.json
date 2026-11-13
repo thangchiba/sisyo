@@ -60,6 +60,72 @@
   "8414e0166d4403fff509302f2973a8765441529584d710249eb1bf887e89caf2",
   "a307853ca9bad1e0335cea6c477400048e2d17fcecaedd79b5b58b481666cbdf"
  ],
+ ".claude/skills/i18n-multilang/SKILL.md": [
+  "607e516e4453303715fe261815fb89d3ad13dffcd1bb46280a18fb8160a9b958"
+ ],
+ ".claude/skills/i18n-multilang/assets/languages.json": [
+  "192d354a852813a395d5028d2dcc2f01d72e22a6d23a352276248d79f06eb091"
+ ],
+ ".claude/skills/i18n-multilang/assets/plural-vectors.json": [
+  "5af73ba5c889057bf3e5746db6db3ebd03140ad3912ea4f6ec4b1b09f178222e"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/README.md": [
+  "2df1658720d5e4dfec2c3e050640fb2406e000a6e8025bed0f141ad422ebd3f8"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/gitattributes.txt": [
+  "a16f175cb78ec3bd1042d41d1b2f9e09b1e893e0e9934f00c4034f551e5a573a"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/gitignore.txt": [
+  "b86579706e898a8a699b05803d1a5f1fda74924d2d6d9060eb0ebc3fa3744c0c"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/glossary.json": [
+  "4a2d04e2743ecf7746b743e3ead2644dcd63e18a99a2914e158445ff950854b3"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/i18n.config.json": [
+  "a2ae65c51942bcc4c8713353934ac8487b513b08e29fc0ab263f61dfcba2d26d"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/locales/__source__/common.json": [
+  "d2d323fe53b9b0257a351fa0653a7eb71fccd504265a844226729ac4215ae7dd"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/notes/common.json": [
+  "2c385e233f4c5de6cebd2b60263c2517192aa9da317c677246a8dc398ac6afb7"
+ ],
+ ".claude/skills/i18n-multilang/assets/project/style.md": [
+  "968180804cdc0b956cbcefda3d9d3042bb574d4751e28ad77b55ad46250fed04"
+ ],
+ ".claude/skills/i18n-multilang/references/format.md": [
+  "eea9f19e4065dc63c2b7768202f17f0a863e42aae12f768591763033fc942b3d"
+ ],
+ ".claude/skills/i18n-multilang/references/languages.md": [
+  "367097928f9063f6a00d4c461f990e521a01036803e6036f34ef93ed2a0fcce0"
+ ],
+ ".claude/skills/i18n-multilang/references/layout-and-versioning.md": [
+  "92d5138ee56d5f01d79772f696b4f7e8f460fee48e227a21a58fa3ab15702e5b"
+ ],
+ ".claude/skills/i18n-multilang/references/numbers.md": [
+  "d22b043f8abdb3dfda4040c458ce7c287db057ffd0e6d77f738f71893c9edbc6"
+ ],
+ ".claude/skills/i18n-multilang/references/platform-unity.md": [
+  "b5371a3f807d74c64bef155bd01eb48514772a663468f657f244c5180b96de55"
+ ],
+ ".claude/skills/i18n-multilang/references/platform-web.md": [
+  "54798c4ba3cef176faf32ed9800d4e051684a45eb9d272903de83bcfe1877ded"
+ ],
+ ".claude/skills/i18n-multilang/references/translation.md": [
+  "7ec40049da31a9dd41a409ac67b564e0292142a975881e3d253ba25ea7baabae"
+ ],
+ ".claude/skills/i18n-multilang/references/voice.md": [
+  "da4e8155ca7459a4618d063632a4393ddca221695f3c0e4e56804afaae377fdf"
+ ],
+ ".claude/skills/i18n-multilang/scripts/i18n.py": [
+  "08f4c548006241e39415899a732b550050c21c6ff4765904c06b5fc1c1862b4d"
+ ],
+ ".claude/skills/i18n-multilang/scripts/numwords.py": [
+  "5075665575dd94abe5678fce40994ef3f3ea4c2ac29846b6319936d735b66406"
+ ],
+ ".claude/skills/i18n-multilang/scripts/voice.py": [
+  "07e67686b0a75d7cf74b67aae0f816590d15a199c2c3a3eea99bb13025ccb841"
+ ],
  ".claude/skills/neon-game-ui-ux-skill/COMPONENTS.md": [
   "d9dd9fb57e0044988628bab166b48f797c7445bef90f72f5d9fd99c21720090c"
  ],
