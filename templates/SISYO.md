@@ -19,7 +19,7 @@
 ## Code Rules
 <!-- Add your team's coding conventions -->
 - [e.g. Use TypeScript strict mode]
-- [e.g. Write tests for new features]
+- Agents, tests and deploys: `.claude/rules/agents-and-tests.md` (sisyo-managed, auto-loaded): read the related code and write the tests first; parallel agents get one combined test pass; the whole test gate before production, not before a dev deploy
 
 ## Docs System
 3-level routing: `MAP.md` → `_summary.md` → detail files.
