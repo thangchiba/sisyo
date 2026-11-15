@@ -25,6 +25,24 @@
  ".claude/skills/fastapi-best-practices/SKILL.md": [
   "6d0424f4c7c8782cac6a1ffeed47d7187f92469e6c92fa76a499f275f571dfb9"
  ],
+ ".claude/skills/g6-style/SKILL.md": [
+  "988595f545decf9a6921d06389981be1ee2bf273dffcb48e56f6f96b620081ee"
+ ],
+ ".claude/skills/g6-style/references/checks.md": [
+  "9cb0824e4d04ae678f60b381731e2a3f6cd8653efe44b380d385c73f0a9a64a0"
+ ],
+ ".claude/skills/g6-style/references/imagery.md": [
+  "9b4df59e13f258297e6aa1dbe94b647f4653ecd212ab4063c0af7f03b43884d2"
+ ],
+ ".claude/skills/g6-style/references/motion.md": [
+  "f961d0bb264d3e26acfdf1f67ca046b3d5d2e74c3b1360f029736f6c9fb0890d"
+ ],
+ ".claude/skills/g6-style/references/sections.md": [
+  "ed4a477aa0f0e43ff24a17a05355fd7dfe9a59502278d91d21772c4b3045c3f6"
+ ],
+ ".claude/skills/g6-style/references/tokens.md": [
+  "2e236057c4bed3acff31640176fa6ad1467ad5ce4f12054101bec643eaa4cee9"
+ ],
  ".claude/skills/gemini-integration/GENERATE.md": [
   "422c523decaec584f7059f8b31e288b358dfde268da427afeeeb265b8a2e8050"
  ],
