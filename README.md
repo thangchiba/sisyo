@@ -19,6 +19,7 @@ your-project/
   CLAUDE.md                            # Auto-created or updated with @SISYO.md
   .claude/
     rules/docs.md                      # Doc rules (auto-loaded)
+    rules/agents-and-tests.md          # Models, tests and deploys (auto-loaded)
     skills/vibe-docs/SKILL.md          # Brain (loaded on trigger)
   docs/
     MAP.md                             # Level 1: routing table
@@ -97,7 +98,7 @@ sisyo splits files into two groups so frequent updates never clobber your work:
 
 | Group | Files | On `--update` |
 |---|---|---|
-| **Managed** (sisyo-owned) | `.claude/rules/docs.md`, `.claude/skills/*` | Replaced **only if** your copy is byte-identical to what sisyo last installed. New skills are added. Skills sisyo dropped are removed only if untouched. |
+| **Managed** (sisyo-owned) | `.claude/rules/docs.md`, `.claude/rules/agents-and-tests.md`, `.claude/skills/*` | Replaced **only if** your copy is byte-identical to what sisyo last installed. New skills are added. Skills sisyo dropped are removed only if untouched. |
 | **Yours** | `SISYO.md`, `CLAUDE.md`, `docs/**` | Never touched. Missing files are created once. |
 
 Hashes of every managed file are recorded in `.claude/sisyo.json` (commit it). If you edited a
