@@ -19,7 +19,7 @@ your-project/
   CLAUDE.md                            # Auto-created or updated with @SISYO.md
   .claude/
     rules/docs.md                      # Doc rules (auto-loaded)
-    rules/agents-and-tests.md          # Models, tests and deploys (auto-loaded)
+    rules/agents-and-tests.md          # Models, tests, sessions and deploys (auto-loaded)
     skills/vibe-docs/SKILL.md          # Brain (loaded on trigger)
   docs/
     MAP.md                             # Level 1: routing table
