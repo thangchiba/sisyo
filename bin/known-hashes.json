@@ -3,6 +3,9 @@
   "766b26e495fd9a849e88c1eff9c1e65e544a10adfc3b21081d590976cdd8bccd",
   "ac4d317ae7e7323c18b1f3896e363b76845ad2455cfa1865bc1d7f27ed93de3a"
  ],
+ ".claude/rules/decision-memory.md": [
+  "cb1b7a224e94ac7ed5ee70deb0aef2b932169ba73b2088183076932befc8b151"
+ ],
  ".claude/rules/docs.md": [
   "1fc7e7ee81314cc57313919e3dcbd61c1c9abf271cb2728987a4650626c55cf2",
   "2b89b91bdcee96353280b6f505be6c0909975d0aab8f5f4726a504b3c1fcbc05",
@@ -147,6 +150,21 @@
  ],
  ".claude/skills/i18n-multilang/scripts/voice.py": [
   "07e67686b0a75d7cf74b67aae0f816590d15a199c2c3a3eea99bb13025ccb841"
+ ],
+ ".claude/skills/kicho-devflow/SKILL.md": [
+  "21ed9024d3e522c1abe4029c78d63dd6cef9527e555901fad152ba38625fb30f"
+ ],
+ ".claude/skills/kicho-devflow/kdev.mjs": [
+  "3c2f7b1806d55fd46c0e4b5145b79d292f0da4e62b7ffb2e3b011892e5d96d3c"
+ ],
+ ".claude/skills/kicho-devflow/templates/handbook.md": [
+  "62d07827709dba504ad2e9b3cf5a1c69cf187ec3e3f29453affa78c5e965deba"
+ ],
+ ".claude/skills/kicho-devflow/templates/request.json": [
+  "c3371d100dc4e8542fb791657dc1a919e90c27aded69dbe51f4fedbd7d5c048a"
+ ],
+ ".claude/skills/kicho-devflow/templates/request.md": [
+  "789bccb7844f575a3a42c731e980cd6649e7f8c32ec87be19f3aa4fe68fbf23c"
  ],
  ".claude/skills/neon-game-ui-ux-skill/COMPONENTS.md": [
   "d9dd9fb57e0044988628bab166b48f797c7445bef90f72f5d9fd99c21720090c"

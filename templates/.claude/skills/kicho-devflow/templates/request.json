@@ -1,0 +1,51 @@
+{
+  "title": "Tóm tắt ngắn của loạt yêu cầu",
+  "mode": "review",
+  "agent": "Claude Code (Opus 5.5) trên ubuntu1",
+  "intro": "",
+  "cards": [
+    {
+      "key": "A",
+      "title": "Tên mục, ngắn",
+      "size": "M",
+      "area": "Database",
+      "kind": "Tính năng",
+      "priority": "P1",
+      "agent": "agent-db",
+      "quote": "lời anh, trích ngắn",
+      "current": "Hiện có: đọc code rồi mới viết. Markdown: danh sách, bảng, `code`.",
+      "proposal": "- Đề xuất cụ thể: kích thước, phím tắt, giới hạn\n- Chỗ trong giao diện",
+      "questions": [
+        {
+          "id": "q1",
+          "text": "Câu hỏi khi thật sự cần anh quyết?",
+          "kind": "single",
+          "options": [
+            { "id": "a", "label": "Lựa chọn agent khuyên", "description": "vì sao, 1 dòng", "recommended": true },
+            { "id": "b", "label": "Lựa chọn khác", "description": "đánh đổi" }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": "Chọn nhiều thứ cùng lúc?",
+          "kind": "multi",
+          "options": [
+            { "id": "x", "label": "Thứ nhất", "recommended": true },
+            { "id": "y", "label": "Thứ hai" }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "title": "Ý của agent ngoài yêu cầu",
+      "size": "S",
+      "area": "Quy trình",
+      "extra": true,
+      "proposal": "Đề xuất thêm, ghi rõ lợi ích."
+    }
+  ],
+  "plan": "1. Việc nào trước\n2. Chia agent theo vùng code\n3. Test chung, kiểm tra trình duyệt, bằng chứng\n4. Backup, test gate, deploy, ghi Phát hành",
+  "raw": "Toàn bộ tin nhắn của anh, nguyên văn.",
+  "tasks": true
+}

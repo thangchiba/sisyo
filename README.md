@@ -20,7 +20,9 @@ your-project/
   .claude/
     rules/docs.md                      # Doc rules (auto-loaded)
     rules/agents-and-tests.md          # Models, tests, sessions and deploys (auto-loaded)
+    rules/decision-memory.md           # Remember the owner's decisions, ask only what matters (auto-loaded)
     skills/vibe-docs/SKILL.md          # Brain (loaded on trigger)
+    skills/kicho-devflow/              # Dev requests through a Kicho hub: REQ cards, tasks, evidence, sprints (kdev.mjs)
   docs/
     MAP.md                             # Level 1: routing table
     99_progress/todo.md                # Task backlog
